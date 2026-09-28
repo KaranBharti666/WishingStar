@@ -1,0 +1,1 @@
+# WishingStar ✦\n\nPersonalised birthday, proposal, Valentine, anniversary and custom surprise pages with unique links, QR codes and a management dashboard.\n\nRun: npm install && npm start\n
