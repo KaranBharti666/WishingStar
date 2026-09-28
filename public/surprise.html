@@ -44,10 +44,11 @@ function closePanels(){document.querySelectorAll(".panel").forEach(x=>x.classLis
 function burst(){const icons=["💖","✨","💕","🎀","🌸","🐼","🧸","🐱","🦋"];for(let i=0;i<42;i++){const e=document.createElement("span");e.className="gift-burst";e.textContent=icons[i%icons.length];e.style.left="50%";e.style.top="48%";e.style.setProperty("--dx",(Math.random()*520-260)+"px");e.style.setProperty("--dy",(Math.random()*520-300)+"px");e.style.setProperty("--rot",(Math.random()*720-360)+"deg");document.body.appendChild(e);setTimeout(()=>e.remove(),1500)}}
 function addFloatingStickers(icons){const layer=$("stickerLayer");layer.innerHTML="";icons.forEach((icon,i)=>{const e=document.createElement("span");e.className="float-sticker";e.textContent=icon;e.style.left=(5+Math.random()*88)+"%";e.style.top=(8+Math.random()*78)+"%";e.style.setProperty("--dur",(3+Math.random()*3)+"s");e.style.setProperty("--x",(Math.random()*40-20)+"px");e.style.animationDelay=(-Math.random()*4)+"s";layer.appendChild(e)})}
 document.getElementById("openGift").addEventListener("click",()=>{const btn=document.getElementById("openGift"),w=document.getElementById("welcome"),g=document.getElementById("giftPage");btn.classList.add("pulse");burst();setTimeout(()=>{w.classList.add("hide");g.style.visibility="visible";g.style.opacity="1";g.style.transition="opacity .8s ease";setTimeout(()=>w.remove(),750)},420)});
+const THEMES={rose:["🎀","💕","🐼","🌸","✨","💗"],lavender:["🦋","💜","🐰","🌷","✨","⭐"],midnight:["🌙","🐈","⭐","💜","🪐","✨"],sunset:["🌸","🧸","💕","🌷","☀️","✨"],classic:["🤍","🎀","🧸","🌿","🌸","✨"]};
 const OCCASIONS={birthday:{emoji:"🎂",name:"Birthday",headline:"Happy Birthday, {name}! 🎂",sub:"A tiny birthday world made just for you. 🎈💕",stickers:["🎂","🎈","🧸","🎀","🍰","🐼","✨","💕"]},proposal:{emoji:"💍",name:"Proposal",headline:"A little question from my heart 💍",sub:"One beautiful question. One unforgettable moment. 🌹",stickers:["💍","💎","🌹","🥰","🧸","✨","💗","🦋"]},valentine:{emoji:"❤️",name:"Valentine",headline:"Happy Valentine’s Day, {name}! ❤️",sub:"A whole little universe made with love. 💌💋",stickers:["💌","💋","💕","🐻","🌹","🎀","✨","💗"]},anniversary:{emoji:"🥂",name:"Anniversary",headline:"Happy Anniversary, {name}! 🥂",sub:"Celebrating every little chapter of us. 💐🤍",stickers:["🥂","💐","💑","🤍","🌸","🧸","✨","💕"]},custom:{emoji:"🌟",name:"A Special Surprise",headline:"A little surprise just for you 🌟",sub:"Made from all the little things that make you smile. 🎀",stickers:["🌟","🎀","🐼","💗","🐱","🦋","✨","🌸"]}};
 const SECTION_META={love:["💗","Why I Love You"],like:["🥰","Why I Like You"],special:["🌸","Why You’re Special"],adore:["🫶","Things I Adore About You"],favorite:["🎀","My Favorite Things About You"],promises:["🤞","Our Little Promises"]};
 function renderGifts(p){
-const occ=OCCASIONS[p.type]||OCCASIONS.custom;document.body.classList.add("occasion-"+(p.type||"custom"));addFloatingStickers(occ.stickers);
+const occ=OCCASIONS[p.type]||OCCASIONS.custom;const themeStickers=THEMES[p.theme]||THEMES.rose;document.body.classList.add("occasion-"+(p.type||"custom"));addFloatingStickers([...occ.stickers,...themeStickers]);
 const tiles=[["memories","🖼️","Our Memories"],["letter","💌","My Letter"]];
 const panels=[["memories","🖼️","Our Memories",'<div class="gallery" id="gallery"></div><p id="noPhotos" style="text-align:center;color:#987681">No photos were added to this surprise.</p>'],["letter","💌","My Letter",'<div class="letter" id="letterText"></div>']];
 Object.entries(p.sections||{}).forEach(([k,v])=>{if(v&&SECTION_META[k]){const m=SECTION_META[k],id="section-"+k;tiles.push([id,m[0],m[1]]);panels.push([id,m[0],m[1],'<div class="letter">'+esc(v)+'</div>'])}});
@@ -57,7 +58,7 @@ $("panels").innerHTML=panels.map(x=>'<section class="panel" id="'+x[0]+'"><butto
 document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>openPanel(b.dataset.panel)));
 
 
-$("eyebrow").textContent=(occ.headline||"").replace("{name}",p.recipient||"you");document.querySelector(".sub").textContent=occ.sub;
+$("welcome").querySelector(".welcome-stickers").textContent=([...themeStickers,...occ.stickers].slice(0,8)).join(" ");$("eyebrow").textContent=(occ.headline||"").replace("{name}",p.recipient||"you");document.querySelector(".sub").textContent=occ.sub;
 }
 async function load(){
 try{
