@@ -1,35 +1,9 @@
 const express=require("express"),QRCode=require("qrcode"),fs=require("fs"),path=require("path"),crypto=require("crypto");
-const app=express(),PORT=process.env.PORT||3000,DB=path.join(__dirname,"data/pages.json"),ORDERS=path.join(__dirname,"data/orders.json");
-fs.mkdirSync(path.dirname(DB),{recursive:true});if(!fs.existsSync(DB))fs.writeFileSync(DB,"{}");if(!fs.existsSync(ORDERS))fs.writeFileSync(ORDERS,"{}");
+const app=express(),PORT=process.env.PORT||3000,DB=path.join(__dirname,"data/pages.json");
+fs.mkdirSync(path.dirname(DB),{recursive:true});if(!fs.existsSync(DB))fs.writeFileSync(DB,"{}");
 app.use(express.json({limit:"20mb"}));app.use(express.static(path.join(__dirname,"public"),{setHeaders:(res,filePath)=>{if(filePath.endsWith("index.html")||filePath.endsWith(".js"))res.setHeader("Cache-Control","no-store, no-cache, must-revalidate, proxy-revalidate");}}));
 const read=()=>JSON.parse(fs.readFileSync(DB,"utf8")),write=x=>fs.writeFileSync(DB,JSON.stringify(x,null,2));
-const clean=b=>({type:["birthday","proposal","valentine","anniversary","custom"].includes(b.type)?b.type:"birthday",recipient:String(b.recipient||"").slice(0,80),sender:String(b.sender||"").slice(0,80),title:String(b.title||"").slice(0,140),message:String(b.message||"").slice(0,6000),date:String(b.date||"").slice(0,40),theme:["rose","lavender","midnight","sunset","classic"].includes(b.theme)?b.theme:"rose",accent:String(b.accent||"#ff4f81").slice(0,20),musicUrl:String(b.musicUrl||"").slice(0,500),proposalQuestion:String(b.proposalQuestion||"").slice(0,300),yesText:String(b.yesText||"Yes ❤️").slice(0,80),noText:String(b.noText||"Maybe 🙈").slice(0,80),photos:Array.isArray(b.photos)?b.photos.filter(x=>typeof x==="string"&&x.length<1500000).slice(0,8):[]});
-const readOrders=()=>JSON.parse(fs.readFileSync(ORDERS,"utf8")),writeOrders=x=>fs.writeFileSync(ORDERS,JSON.stringify(x,null,2));
-const priceInr=Number(process.env.WISHINGSTAR_PRICE||99);
-app.get("/api/payment/config",(q,s)=>s.json({enabled:Boolean(process.env.RAZORPAY_KEY_ID&&process.env.RAZORPAY_KEY_SECRET),price:priceInr}));
-app.post("/api/payment/order",async(q,s)=>{
-  if(!process.env.RAZORPAY_KEY_ID||!process.env.RAZORPAY_KEY_SECRET)return s.status(503).json({error:"Online payment is not configured yet. Please try again later."});
-  const page=clean(q.body?.page||{}),customer=q.body?.customer||{};
-  if(!customer.email||!customer.phone)return s.status(400).json({error:"Customer email and phone are required."});
-  try{
-    const receipt="ws_"+crypto.randomBytes(8).toString("hex");
-    const rr=await fetch("https://api.razorpay.com/v1/orders",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Basic "+Buffer.from(process.env.RAZORPAY_KEY_ID+":"+process.env.RAZORPAY_KEY_SECRET).toString("base64")},body:JSON.stringify({amount:Math.round(priceInr*100),currency:"INR",receipt,payment_capture:1,notes:{product:"WishingStar",recipient:page.recipient}})});
-    const order=await rr.json();
-    if(!rr.ok)throw new Error(order.error?.description||"Could not create payment order.");
-    const od=readOrders();od[order.id]={orderId:order.id,payload:page,customer:{name:String(customer.name||"").slice(0,80),email:String(customer.email).slice(0,160),phone:String(customer.phone).slice(0,20)},amount:order.amount,status:"created",createdAt:new Date().toISOString()};writeOrders(od);
-    s.json({keyId:process.env.RAZORPAY_KEY_ID,orderId:order.id,amount:order.amount,currency:order.currency});
-  }catch(e){s.status(502).json({error:e.message||"Payment provider error."})}
-});
-app.post("/api/payment/verify",(q,s)=>{
-  const {razorpay_order_id,razorpay_payment_id,razorpay_signature}=q.body||{},od=readOrders(),o=od[razorpay_order_id];
-  if(!o)return s.status(400).json({error:"Payment order not found."});
-  const expected=crypto.createHmac("sha256",process.env.RAZORPAY_KEY_SECRET||"").update(razorpay_order_id+"|"+razorpay_payment_id).digest("hex");
-  if(!razorpay_signature||!crypto.timingSafeEqual(Buffer.from(expected),Buffer.from(razorpay_signature)))return s.status(400).json({error:"Payment signature verification failed."});
-  if(o.status==="paid"&&o.pageId)return s.json({id:o.pageId});
-  const d=read(),id=crypto.randomBytes(7).toString("base64url"),p=o.payload;d[id]={...p,id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),paymentId:razorpay_payment_id};write(d);
-  o.status="paid";o.pageId=id;o.paymentId=razorpay_payment_id;o.paidAt=new Date().toISOString();writeOrders(od);
-  s.json({id,url:`${q.protocol}://${q.get("host")}/s/${id}`});
-});
+const clean=b=>({type:["birthday","proposal","valentine","anniversary","custom"].includes(b.type)?b.type:"birthday",recipient:String(b.recipient||"").slice(0,80),sender:String(b.sender||"").slice(0,80),title:String(b.title||"").slice(0,140),message:String(b.message||"").slice(0,6000),loveText:String(b.loveText||"").slice(0,6000),date:String(b.date||"").slice(0,40),theme:["rose","lavender","midnight","sunset","classic"].includes(b.theme)?b.theme:"rose",accent:String(b.accent||"#ff4f81").slice(0,20),musicUrl:String(b.musicUrl||"").slice(0,500),proposalQuestion:String(b.proposalQuestion||"").slice(0,300),yesText:String(b.yesText||"Yes ❤️").slice(0,80),noText:String(b.noText||"Maybe 🙈").slice(0,80),photos:Array.isArray(b.photos)?b.photos.filter(x=>typeof x==="string"&&x.length<1500000).slice(0,8):[]});
 app.get("/api/pages",(q,s)=>s.json(Object.values(read()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt))));
 app.post("/api/pages",(q,s)=>{const d=read(),id=crypto.randomBytes(7).toString("base64url"),p=clean(q.body);d[id]={...p,id,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};write(d);s.json({id,url:`${q.protocol}://${q.get("host")}/s/${id}`})});
 app.get("/api/pages/:id",(q,s)=>{const p=read()[q.params.id];p?s.json(p):s.status(404).json({error:"Not found"})});
