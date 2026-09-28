@@ -1,7 +1,7 @@
 const express=require("express"),QRCode=require("qrcode"),fs=require("fs"),path=require("path"),crypto=require("crypto");
 const app=express(),PORT=process.env.PORT||3000,DB=path.join(__dirname,"data/pages.json");
 fs.mkdirSync(path.dirname(DB),{recursive:true});if(!fs.existsSync(DB))fs.writeFileSync(DB,"{}");
-app.use(express.json({limit:"15mb"}));app.use(express.static(path.join(__dirname,"public")));
+app.use(express.json({limit:"15mb"}));app.use(express.static(path.join(__dirname,"public"),{setHeaders:(res,filePath)=>{if(filePath.endsWith("index.html")||filePath.endsWith(".js"))res.setHeader("Cache-Control","no-store, no-cache, must-revalidate, proxy-revalidate");}}));
 const read=()=>JSON.parse(fs.readFileSync(DB,"utf8")),write=x=>fs.writeFileSync(DB,JSON.stringify(x,null,2));
 const clean=b=>({type:["birthday","proposal","valentine","anniversary","custom"].includes(b.type)?b.type:"birthday",recipient:String(b.recipient||"").slice(0,80),sender:String(b.sender||"").slice(0,80),title:String(b.title||"").slice(0,140),message:String(b.message||"").slice(0,6000),date:String(b.date||"").slice(0,40),theme:["rose","lavender","midnight","sunset","classic"].includes(b.theme)?b.theme:"rose",accent:String(b.accent||"#ff4f81").slice(0,20),musicUrl:String(b.musicUrl||"").slice(0,500),proposalQuestion:String(b.proposalQuestion||"").slice(0,300),yesText:String(b.yesText||"Yes ❤️").slice(0,80),noText:String(b.noText||"Maybe 🙈").slice(0,80),photos:Array.isArray(b.photos)?b.photos.filter(x=>typeof x==="string"&&x.length<1500000).slice(0,8):[]});
 app.get("/api/pages",(q,s)=>s.json(Object.values(read()).sort((a,b)=>b.createdAt.localeCompare(a.createdAt))));
