@@ -57,7 +57,7 @@ async function uploadDataUrl(v,folder,id){
  const ext=(p.mime.split("/")[1]||"bin").replace(/[^a-z0-9]+/gi,"").slice(0,10)||"bin";
  const key=folder+"/"+id+"-"+crypto.randomBytes(8).toString("hex")+"."+ext;
  await r2Client().send(new PutObjectCommand({Bucket:process.env.R2_BUCKET,Key:key,Body:p.data,ContentType:p.mime,CacheControl:"public,max-age=31536000,immutable"}));
- return process.env.R2_PUBLIC_BASE_URL.replace(//$/,"")+"/"+key;
+ return process.env.R2_PUBLIC_BASE_URL.replace(/\/$/,"")+"/"+key;
 }
 async function hydratePage(p){
  const id=p.id||crypto.randomBytes(7).toString("base64url");
