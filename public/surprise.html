@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WishingStar ✦</title>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Playfair+Display:wght@700&family=DM+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Playfair+Display:wght@700&family=DM+Sans&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:DM Sans;color:#351a25;padding:18px;transition:.4s;overflow-x:hidden}
 .rose{background:linear-gradient(180deg,#fff8fb,#ffd7e7)}.lavender{background:linear-gradient(180deg,#fcf8ff,#e8dcff)}.midnight{background:linear-gradient(180deg,#21182d,#4b2852);color:#fff}.sunset{background:linear-gradient(180deg,#fff9f2,#ffd0c8)}.classic{background:linear-gradient(180deg,#fffdf9,#f1e2d4)}.rose:after,.lavender:after,.midnight:after,.sunset:after,.classic:after{content:"🎀 💕 🐼 ✨ 🐱 🌸";position:fixed;top:8px;right:8px;font-size:18px;letter-spacing:3px;opacity:.7;pointer-events:none;z-index:0}.lavender:after{content:"🦋 💜 🐰 ✨ 🌷"}.midnight:after{content:"🌙 🐈 ⭐ 💜 ✨"}.sunset:after{content:"🌸 🧸 💕 🌷 ✨"}.classic:after{content:"🤍 🎀 🧸 🌸 ✨"}
@@ -11,10 +11,19 @@
 .menu{display:grid;grid-template-columns:1fr 1fr;gap:16px}.tile{background:#ffffffd9;border:1px solid #fff;border-radius:22px;padding:30px 14px;min-height:165px;box-shadow:0 12px 35px #7b304512;cursor:pointer;text-align:center;color:#4b1727;transition:.2s}.tile:active{transform:scale(.98)}.icon{font-size:42px}.tile h2{font:400 24px DM Sans;margin:12px 0 0}.midnight .tile{background:#19192bdd;color:#fff;border-color:#ffffff22}
 .panel{display:none;margin-top:18px;background:#ffffffea;border-radius:25px;padding:22px;box-shadow:0 15px 45px #7b304520}.panel.active{display:block}.panel h2{font:700 30px Playfair Display;margin:0 0 14px;color:#5d172b}.midnight .panel{background:#19192bdd}.midnight .panel h2{color:#fff}.close{float:right;border:0;background:#fff0f5;color:#a62d55;border-radius:99px;padding:8px 14px;font-weight:700}.letter{white-space:pre-wrap;line-height:1.9;font-size:17px;color:#66545d}.midnight .letter{color:#ddd}.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:17px}.datebox{text-align:center;padding:25px;font-size:22px}.datebig{font:600 38px Caveat;color:#ff4f81}.music{margin:20px auto;text-align:center}.music button{border:0;border-radius:99px;padding:13px 22px;background:#ff4f81;color:#fff;font-weight:700}.from{text-align:center;margin:24px 0;color:#9b7884}.proposal{margin-top:22px;text-align:center}.proposal h2{font:600 31px Caveat}.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.actions button{padding:12px 22px;border:0;border-radius:99px;font-weight:700}.yes{background:#ff4f81;color:#fff}.no{background:#fff0f5;color:#b72e58}.error{display:none;text-align:center;padding:24px;background:#fff0f0;border-radius:20px;color:#9f2947}.spark{position:fixed;pointer-events:none;animation:fall 1.7s ease-out forwards;font-size:24px}@keyframes beat{50%{transform:scale(1.08)}}@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
 @media(max-width:520px){body{padding:10px}.menu{gap:12px}.tile{min-height:145px;padding:24px 8px}.tile h2{font-size:20px}.eyebrow{font-size:18px}.sub{font-size:16px}.gallery{grid-template-columns:1fr 1fr}}
-</style>
+
+.gift-page{min-height:100vh;animation:giftIn .9s ease both}@keyframes giftIn{from{opacity:0;transform:scale(.96) translateY(20px)}to{opacity:1;transform:none}}
+.sticker-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:3}.float-sticker{position:absolute;font-size:clamp(22px,6vw,38px);animation:floaty var(--dur) ease-in-out infinite;filter:drop-shadow(0 8px 12px #7b304525)}@keyframes floaty{0%,100%{transform:translate3d(0,0) rotate(-8deg)}50%{transform:translate3d(var(--x),-28px) rotate(10deg)}}
+.occasion-birthday .tile:nth-child(1){background:linear-gradient(145deg,#fff,#fff0f6)}.occasion-proposal .tile{background:linear-gradient(145deg,#fff,#f7edff)}.occasion-valentine .tile{background:linear-gradient(145deg,#fff,#ffe8ef)}.occasion-anniversary .tile{background:linear-gradient(145deg,#fff,#fff4dd)}.occasion-custom .tile{background:linear-gradient(145deg,#fff,#eaf5ff)}
+.occasion-birthday .hero .heart:after{content:"🎈";font-size:24px;margin-left:8px}.occasion-proposal .hero .heart:after{content:"💍";font-size:24px;margin-left:8px}.occasion-valentine .hero .heart:after{content:"💋";font-size:24px;margin-left:8px}.occasion-anniversary .hero .heart:after{content:"🥂";font-size:24px;margin-left:8px}.occasion-custom .hero .heart:after{content:"🌟";font-size:24px;margin-left:8px}
+.gift-burst{position:fixed;z-index:50;pointer-events:none;font-size:28px;animation:burst 1.4s cubic-bezier(.2,.8,.2,1) forwards}@keyframes burst{0%{opacity:1;transform:translate(-50%,-50%) scale(.3)}70%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--rot)) scale(1.25)}}
+.open-gift.pulse{animation:openPulse .55s ease}@keyframes openPulse{50%{transform:scale(1.1) rotate(-2deg);box-shadow:0 0 0 14px #ff7ca733,0 18px 45px #ff4f8160}}
+.invite-card{margin-top:16px;padding:26px;border-radius:24px;background:linear-gradient(145deg,#fff,#ffeaf2);text-align:center;border:1px solid #ffd1df;box-shadow:0 12px 35px #7b304515}.invite-date{font:700 34px Caveat;color:#e43d72}.invite-meta{font-size:16px;color:#765964;line-height:1.8}
+.midnight .invite-card{background:#241b31;border-color:#ffffff18}.midnight .invite-meta{color:#ddd}.midnight .tile{background:#241b31ee}
+
 </head>
 <body>
-<section class="welcome" id="welcome"><div class="welcome-card"><div class="welcome-stickers">🎀 💕 🐼 ✨ 🐱 💗</div><div style="font:600 30px Caveat;color:#d83f6c">WishingStar ✦</div><h1 id="welcomeTitle">A little surprise for you 💗</h1><p id="welcomeText">Someone who loves you made something special just for you. Take a breath, smile… and open your little gift. 🎁</p><button class="open-gift" id="openGift">Open Your Gift 🎁✨</button></div></section><main class="wrap" id="giftPage" style="visibility:hidden;opacity:0">
+<section class="welcome" id="welcome"><div class="welcome-card"><div class="welcome-stickers">🎀 💕 🐼 ✨ 🐱 💗</div><div style="font:600 30px Caveat;color:#d83f6c">WishingStar ✦</div><h1 id="welcomeTitle">A little surprise for you 💗</h1><p id="welcomeText">Someone who loves you made something special just for you. Take a breath, smile… and open your little gift. 🎁</p><button class="open-gift" id="openGift">Open Your Gift 🎁✨</button></div></section><div class="sticker-layer" id="stickerLayer"></div><main class="wrap gift-page" id="giftPage" style="visibility:hidden;opacity:0">
 <section class="hero">
 <div class="logo">WishingStar ✦</div>
 <div class="heart">💗</div>
@@ -22,16 +31,8 @@
 <p class="sub">Explore the little things I love about us.</p>
 </section>
 <div id="error" class="error"></div>
-<section class="menu" id="menu" style="display:none">
-<button class="tile" type="button" data-panel="memories"><div class="icon">🖼️</div><h2>Our<br>Memories</h2></button>
-<button class="tile" type="button" data-panel="letter"><div class="icon">✉️</div><h2>My Letter</h2></button>
-<button class="tile" type="button" data-panel="love"><div class="icon">♡</div><h2>Why I Love<br>You</h2></button>
-<button class="tile" type="button" data-panel="date"><div class="icon">♡<small style="display:block;font-size:24px;margin-top:-17px">▣</small></div><h2>Date Night?</h2></button>
-</section>
-<section class="panel" id="memories"><button class="close" type="button">Back</button><h2>Our Memories</h2><div class="gallery" id="gallery"></div><p id="noPhotos" style="text-align:center;color:#987681">No photos were added to this surprise.</p></section>
-<section class="panel" id="letter"><button class="close" type="button">Back</button><h2>My Letter</h2><div class="letter" id="letterText"></div></section>
-<section class="panel" id="love"><button class="close" type="button">Back</button><h2>Why I Love You</h2><div class="letter" id="loveText"></div></section>
-<section class="panel" id="date"><button class="close" type="button">Back</button><h2>Date Night?</h2><div class="datebox"><div>Our special date</div><div class="datebig" id="dateText">Whenever we're together ❤️</div></div></section>
+<section class="menu" id="menu" style="display:none"></section>
+<div id="panels"></div>
 <div class="music" id="music"></div>
 <div class="from" id="from"></div>
 <div class="proposal" id="proposal"></div>
@@ -40,22 +41,38 @@
 const id=location.pathname.split("/").filter(Boolean).pop();
 const $=id=>document.getElementById(id);
 function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
-function openPanel(name){document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));$(name).classList.add("active");window.scrollTo({top:document.getElementById(name).offsetTop-10,behavior:"smooth"})}
+function openPanel(name){document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));const el=$(name);if(!el)return;el.classList.add("active");window.scrollTo({top:el.offsetTop-10,behavior:"smooth"})}
+function closePanels(){document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));window.scrollTo({top:0,behavior:"smooth"})}
+function burst(){const icons=["💖","✨","💕","🎀","🌸","🐼","🧸","🐱","🦋"];for(let i=0;i<42;i++){const e=document.createElement("span");e.className="gift-burst";e.textContent=icons[i%icons.length];e.style.left="50%";e.style.top="48%";e.style.setProperty("--dx",(Math.random()*520-260)+"px");e.style.setProperty("--dy",(Math.random()*520-300)+"px");e.style.setProperty("--rot",(Math.random()*720-360)+"deg");document.body.appendChild(e);setTimeout(()=>e.remove(),1500)}}
+function addFloatingStickers(icons){const layer=$("stickerLayer");layer.innerHTML="";icons.forEach((icon,i)=>{const e=document.createElement("span");e.className="float-sticker";e.textContent=icon;e.style.left=(5+Math.random()*88)+"%";e.style.top=(8+Math.random()*78)+"%";e.style.setProperty("--dur",(3+Math.random()*3)+"s");e.style.setProperty("--x",(Math.random()*40-20)+"px");e.style.animationDelay=(-Math.random()*4)+"s";layer.appendChild(e)})}
+document.getElementById("openGift").addEventListener("click",()=>{const btn=document.getElementById("openGift"),w=document.getElementById("welcome"),g=document.getElementById("giftPage");btn.classList.add("pulse");burst();setTimeout(()=>{w.classList.add("hide");g.style.visibility="visible";g.style.opacity="1";g.style.transition="opacity .8s ease";setTimeout(()=>w.remove(),750)},420)});
+const OCCASIONS={birthday:{emoji:"🎂",name:"Birthday",headline:"Happy Birthday, {name}! 🎂",sub:"A tiny birthday world made just for you. 🎈💕",stickers:["🎂","🎈","🧸","🎀","🍰","🐼","✨","💕"]},proposal:{emoji:"💍",name:"Proposal",headline:"A little question from my heart 💍",sub:"One beautiful question. One unforgettable moment. 🌹",stickers:["💍","💎","🌹","🥰","🧸","✨","💗","🦋"]},valentine:{emoji:"❤️",name:"Valentine",headline:"Happy Valentine’s Day, {name}! ❤️",sub:"A whole little universe made with love. 💌💋",stickers:["💌","💋","💕","🐻","🌹","🎀","✨","💗"]},anniversary:{emoji:"🥂",name:"Anniversary",headline:"Happy Anniversary, {name}! 🥂",sub:"Celebrating every little chapter of us. 💐🤍",stickers:["🥂","💐","💑","🤍","🌸","🧸","✨","💕"]},custom:{emoji:"🌟",name:"A Special Surprise",headline:"A little surprise just for you 🌟",sub:"Made from all the little things that make you smile. 🎀",stickers:["🌟","🎀","🐼","💗","🐱","🦋","✨","🌸"]}};
+const SECTION_META={love:["💗","Why I Love You"],like:["🥰","Why I Like You"],special:["🌸","Why You’re Special"],adore:["🫶","Things I Adore About You"],favorite:["🎀","My Favorite Things About You"],promises:["🤞","Our Little Promises"]};
+function renderGifts(p){
+const occ=OCCASIONS[p.type]||OCCASIONS.custom;document.body.classList.add("occasion-"+(p.type||"custom"));addFloatingStickers(occ.stickers);
+const tiles=[["memories","🖼️","Our Memories"],["letter","💌","My Letter"]];
+const panels=[["memories","🖼️","Our Memories",'<div class="gallery" id="gallery"></div><p id="noPhotos" style="text-align:center;color:#987681">No photos were added to this surprise.</p>'],["letter","💌","My Letter",'<div class="letter" id="letterText"></div>']];
+Object.entries(p.sections||{}).forEach(([k,v])=>{if(v&&SECTION_META[k]){const m=SECTION_META[k],id="section-"+k;tiles.push([id,m[0],m[1]]);panels.push([id,m[0],m[1],'<div class="letter">'+esc(v)+'</div>'])}});
+if(p.dateInvite){tiles.push(["dateInvite","🌙","Date Night?"]);const di=p.dateInvite;const date=di.date?new Date(di.date+"T00:00:00").toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"}):"Pick a date";panels.push(["dateInvite","🌙","Date Night?",'<div class="invite-card"><div style="font-size:46px">🌙 💕</div><div class="invite-date">'+esc(date)+'</div><div class="invite-meta">'+esc(di.time||"A time just for us")+'<br>'+esc(di.place||"A special plan awaits ✨")+'<br><br>'+esc(di.message||"Will you go on a date with me? 💕")+'</div></div>'])}
+$("menu").innerHTML=tiles.map(x=>'<button class="tile" type="button" data-panel="'+x[0]+'"><div class="icon">'+x[1]+'</div><h2>'+x[2].replace(" ","<br>")+'</h2></button>').join("");
+$("panels").innerHTML=panels.map(x=>'<section class="panel" id="'+x[0]+'"><button class="close" type="button" onclick="closePanels()">Back</button><h2>'+x[1]+' '+x[2]+'</h2>'+x[3]+'</section>').join("");
 document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>openPanel(b.dataset.panel)));
-document.querySelectorAll(".close").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));window.scrollTo({top:0,behavior:"smooth"})}));
-document.getElementById("openGift").addEventListener("click",()=>{const w=document.getElementById("welcome"),g=document.getElementById("giftPage");w.classList.add("hide");g.style.visibility="visible";g.style.opacity="1";g.style.transition="opacity .7s ease";setTimeout(()=>w.remove(),650)});
+
+
+$("eyebrow").textContent=(occ.headline||"").replace("{name}",p.recipient||"you");document.querySelector(".sub").textContent=occ.sub;
+}
 async function load(){
 try{
 const r=await fetch("/api/pages/"+encodeURIComponent(id),{cache:"no-store"});
 if(!r.ok)throw new Error("not found");
 const p=await r.json();
-document.body.className=p.theme||"rose";
-document.title=(p.title||"WishingStar")+" ✦";$("welcomeTitle").textContent=p.recipient?"Hey "+p.recipient+" 💗":"A little surprise for you 💗";$("welcomeText").textContent=(p.sender?p.sender+" made this little surprise especially for you. ":"Someone who loves you made this little surprise especially for you. ")+"Take a breath, smile… and open your gift. 🎁✨";
+document.body.className=(p.theme||"rose")+" gift-theme";
+document.title=(p.title||"WishingStar")+" ✦";$("welcomeTitle").textContent=p.recipient?"Hey "+p.recipient+" 💗":"A little surprise for you 💗";$("welcomeText").textContent=(p.sender?p.sender+" made this little surprise especially for you. ":"Someone who loves you made this little surprise especially for you. ")+"Take a breath, smile… and open your gift. 🎁✨";renderGifts(p);
 $("eyebrow").textContent=p.title||"A little surprise made just for you";
 $("letterText").textContent=p.message||"";
-$("loveText").textContent=p.loveText||"";
-$("from").textContent=p.sender?"With love, "+p.sender:"";
-if(p.date)$("dateText").textContent=new Date(p.date+"T00:00:00").toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"});
+
+
+
 const photos=p.photos||[];
 $("gallery").innerHTML=photos.map(x=>'<img src="'+x+'" alt="Memory">').join("");
 $("noPhotos").style.display=photos.length?"none":"block";
@@ -65,7 +82,7 @@ if(/youtu\.be|youtube\.com/i.test(u)){const m=u.match(/[?&]v=([^&]+)/)||u.match(
 else if(/spotify\.com/i.test(u)){const m=u.match(/spotify\.com\/(track|album|playlist)\/([A-Za-z0-9]+)/);if(m)box.innerHTML='<iframe src="https://open.spotify.com/embed/'+m[1]+'/'+m[2]+'" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media" style="border:0;border-radius:16px"></iframe>'}
 else{const a=new Audio(u);a.loop=true;const b=document.createElement("button");b.className="music";b.textContent="▶ Play music";b.onclick=()=>a.play();box.appendChild(b)}
 }
-if(p.type==="proposal")$("proposal").innerHTML='<h2>'+esc(p.proposalQuestion||"Will you be mine forever?")+'</h2><div class="actions"><button class="yes" id="yesBtn">'+esc(p.yesText||"Yes ❤️")+'</button><button class="no" id="noBtn">'+esc(p.noText||"Maybe 🙈")+'</button></div>';
+if(false&&p.type==="proposal")$("proposal").innerHTML='<h2>'+esc(p.proposalQuestion||"Will you be mine forever?")+'</h2><div class="actions"><button class="yes" id="yesBtn">'+esc(p.yesText||"Yes ❤️")+'</button><button class="no" id="noBtn">'+esc(p.noText||"Maybe 🙈")+'</button></div>';
 if(p.type==="proposal"){document.getElementById("yesBtn").onclick=celebrate;document.getElementById("noBtn").onclick=moveNo}
 $("menu").style.display="grid";
 }catch(e){console.error(e);$("error").style.display="block";$("error").innerHTML="<b>This surprise could not be loaded.</b><br>Please open the link again in Chrome."}
