@@ -34,8 +34,6 @@
 <section class="menu" id="menu" style="display:none"></section>
 <div id="panels"></div>
 <div class="music" id="music"></div>
-<div class="from" id="from"></div>
-<div class="proposal" id="proposal"></div>
 </main>
 <script>
 const id=location.pathname.split("/").filter(Boolean).pop();
@@ -53,7 +51,7 @@ const occ=OCCASIONS[p.type]||OCCASIONS.custom;document.body.classList.add("occas
 const tiles=[["memories","🖼️","Our Memories"],["letter","💌","My Letter"]];
 const panels=[["memories","🖼️","Our Memories",'<div class="gallery" id="gallery"></div><p id="noPhotos" style="text-align:center;color:#987681">No photos were added to this surprise.</p>'],["letter","💌","My Letter",'<div class="letter" id="letterText"></div>']];
 Object.entries(p.sections||{}).forEach(([k,v])=>{if(v&&SECTION_META[k]){const m=SECTION_META[k],id="section-"+k;tiles.push([id,m[0],m[1]]);panels.push([id,m[0],m[1],'<div class="letter">'+esc(v)+'</div>'])}});
-if(p.dateInvite){tiles.push(["dateInvite","🌙","Date Night?"]);const di=p.dateInvite;const date=di.date?new Date(di.date+"T00:00:00").toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"}):"Pick a date";panels.push(["dateInvite","🌙","Date Night?",'<div class="invite-card"><div style="font-size:46px">🌙 💕</div><div class="invite-date">'+esc(date)+'</div><div class="invite-meta">'+esc(di.time||"A time just for us")+'<br>'+esc(di.place||"A special plan awaits ✨")+'<br><br>'+esc(di.message||"Will you go on a date with me? 💕")+'</div></div>'])}
+if(p.type==="proposal"){tiles.push(["proposal","💍","The Big Question"]);panels.push(["proposal","💍","The Big Question","<div class=\"proposal\" style=\"display:block\"><h2>"+esc(p.proposalQuestion||"Will you be mine forever?")+"</h2><div class=\"actions\"><button class=\"yes\" id=\"yesBtn\">"+esc(p.yesText||"Yes ❤️")+"</button><button class=\"no\" id=\"noBtn\">"+esc(p.noText||"Maybe 🙈")+"</button></div></div>"]);}if(p.dateInvite){tiles.push(["dateInvite","🌙","Date Night?"]);const di=p.dateInvite;const date=di.date?new Date(di.date+"T00:00:00").toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"}):"Pick a date";panels.push(["dateInvite","🌙","Date Night?",'<div class="invite-card"><div style="font-size:46px">🌙 💕</div><div class="invite-date">'+esc(date)+'</div><div class="invite-meta">'+esc(di.time||"A time just for us")+'<br>'+esc(di.place||"A special plan awaits ✨")+'<br><br>'+esc(di.message||"Will you go on a date with me? 💕")+'</div></div>'])}
 $("menu").innerHTML=tiles.map(x=>'<button class="tile" type="button" data-panel="'+x[0]+'"><div class="icon">'+x[1]+'</div><h2>'+x[2].replace(" ","<br>")+'</h2></button>').join("");
 $("panels").innerHTML=panels.map(x=>'<section class="panel" id="'+x[0]+'"><button class="close" type="button" onclick="closePanels()">Back</button><h2>'+x[1]+' '+x[2]+'</h2>'+x[3]+'</section>').join("");
 document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>openPanel(b.dataset.panel)));
