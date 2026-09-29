@@ -71,10 +71,7 @@ addFloatingStickers([...occ.stickers,...themeStickers]);
 const tiles=[["memories","🖼️","Our Memories"],["letter","💌","My Letter"]];
 const panels=[["memories","🖼️","Our Memories",'<div class="gallery" id="gallery"></div><p id="noPhotos" style="text-align:center;color:#987681">No photos were added to this surprise.</p>'],["letter","💌","My Letter",'<div class="letter" id="letterText"></div>']];
 const videos=Array.isArray(p.videos)?p.videos:[];
-if(videos.length){
-tiles.push(["videos","🎬","Our Videos"]);
-panels.push(["videos","🎬","Our Videos",'<div style="display:grid;gap:16px">'+videos.map(v=>'<video src="'+v+'" controls playsinline preload="metadata" style="width:100%;max-height:520px;border-radius:18px;background:#000;box-shadow:0 10px 30px #7b304520"></video>').join("")+'</div>']);
-}
+if(videos.length){const memoryPanel=panels.find(x=>x[0]==="memories");if(memoryPanel)memoryPanel[3]+='<div style="display:grid;gap:16px;margin-top:16px">'+videos.map(v=>'<video src="'+v+'" controls playsinline preload="metadata" style="width:100%;max-height:520px;border-radius:18px;background:#000;box-shadow:0 10px 30px #7b304520"></video>').join("")+'</div>';}
 Object.entries(p.sections||{}).forEach(([k,v])=>{if(v&&SECTION_META[k]){const m=SECTION_META[k],pid="section-"+k;tiles.push([pid,m[0],m[1]]);panels.push([pid,m[0],m[1],'<div class="letter">'+esc(v)+'</div>'])}});
 if(p.type==="proposal"){tiles.push(["proposal","💍","The Big Question"]);panels.push(["proposal","💍","The Big Question",'<div class="proposal" style="display:block"><h2>'+esc(p.proposalQuestion||"Will you be mine forever?")+'</h2><div class="actions"><button class="yes" id="yesBtn">'+esc(p.yesText||"Yes ❤️")+'</button><button class="no" id="noBtn">'+esc(p.noText||"Maybe 🙈")+'</button></div></div>'])}
 if(p.dateInvite){tiles.push(["dateInvite","🌙","Date Night?"]);const di=p.dateInvite;const date=di.date?new Date(di.date+"T00:00:00").toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"}):"Pick a date";panels.push(["dateInvite","🌙","Date Night?",'<div class="invite-card"><div style="font-size:46px">🌙 💕</div><div class="invite-date">'+esc(date)+'</div><div class="invite-meta">'+esc(di.time||"A time just for us")+'<br>'+esc(di.place||"A special plan awaits ✨")+'<br><br>'+esc(di.message||"Will you go on a date with me? 💕")+'</div></div>'])}
@@ -102,11 +99,10 @@ $("letterText").textContent=p.message||"";
 const photos=p.photos||[];
 $("gallery").innerHTML=photos.map(x=>'<img src="'+x+'" alt="Memory">').join("");
 $("noPhotos").style.display=photos.length?"none":"block";
-if(p.musicUrl){
-const u=p.musicUrl.trim(),box=$("music");
-if(/youtu\.be|youtube\.com/i.test(u)){const m=u.match(/[?&]v=([^&]+)/)||u.match(/youtu\.be\/([^?]+)/);if(m)box.innerHTML='<iframe width="100%" height="90" src="https://www.youtube.com/embed/'+m[1]+'?autoplay=1" allow="autoplay; encrypted-media" style="border:0;border-radius:16px"></iframe>'}
-else if(/spotify\.com/i.test(u)){const m=u.match(/spotify\.com\/(track|album|playlist)\/([A-Za-z0-9]+)/);if(m)box.innerHTML='<iframe src="https://open.spotify.com/embed/'+m[1]+'/'+m[2]+'" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media" style="border:0;border-radius:16px"></iframe>'}
-else{const a=new Audio(u);a.loop=true;const b=document.createElement("button");b.className="music";b.textContent="▶ Play music";b.onclick=()=>a.play();box.appendChild(b)}
+if(p.musicUrl||p.customAudio){
+const box=$("music");
+if(p.customAudio){const wrap=document.createElement("div");wrap.style.cssText="background:#ffffffcc;border:1px solid #ffd1df;border-radius:18px;padding:14px;margin:10px auto;max-width:620px";wrap.innerHTML='<div style="font-weight:700;margin-bottom:8px">🎵 Custom audio</div>';const ca=document.createElement("audio");ca.controls=true;ca.preload="metadata";ca.src=p.customAudio;ca.style.width="100%";wrap.appendChild(ca);box.appendChild(wrap)}
+if(p.musicUrl){const u=p.musicUrl.trim();if(/youtu\\.be|youtube\\.com/i.test(u)){const mm=u.match(/[?&]v=([^&]+)/)||u.match(/youtu\\.be\\/([^?]+)/);if(mm)box.insertAdjacentHTML("beforeend",'<iframe width="100%" height="90" src="https://www.youtube.com/embed/'+mm[1]+'" allow="autoplay; encrypted-media" style="border:0;border-radius:16px;margin-top:8px"></iframe>')}else if(/spotify\\.com/i.test(u)){const mm=u.match(/spotify\\.com\\/(track|album|playlist)\\/([A-Za-z0-9]+)/);if(mm)box.insertAdjacentHTML("beforeend",'<iframe src="https://open.spotify.com/embed/'+mm[1]+'/'+mm[2]+'" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media" style="border:0;border-radius:16px;margin-top:8px"></iframe>')}else{const au=new Audio(u);au.controls=true;au.loop=true;au.style.width="100%";au.style.marginTop="8px";box.appendChild(au)}}
 }
 if(false&&p.type==="proposal")$("proposal").innerHTML='<h2>'+esc(p.proposalQuestion||"Will you be mine forever?")+'</h2><div class="actions"><button class="yes" id="yesBtn">'+esc(p.yesText||"Yes ❤️")+'</button><button class="no" id="noBtn">'+esc(p.noText||"Maybe 🙈")+'</button></div>';
 if(p.type==="proposal"){document.getElementById("yesBtn").onclick=celebrate;document.getElementById("noBtn").onclick=moveNo}
