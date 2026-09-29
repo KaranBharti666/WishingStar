@@ -28,7 +28,8 @@ const safeMedia=v=>{
   }
   try{
     const u=new URL(v);
-    return u.protocol==="http:"||u.protocol==="https:"?v:"";
+    const base=String(process.env.R2_PUBLIC_BASE_URL||"").replace(/\/$/,"");
+    return base&&v.startsWith(base+"/")?v:"";
   }catch{return ""}
 };
 
