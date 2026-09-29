@@ -39,7 +39,7 @@ input,textarea,select{width:100%;padding:13px 14px;margin:6px 0 11px;border:1px 
 <div class="row"><div><label id="dateLabel">Occasion date <span class="req">*</span></label><input id="date" type="date"></div>
 <div><label>Music <span class="opt">(Optional)</span></label><input id="musicUrl" placeholder="YouTube, Spotify or direct MP3 URL"></div></div>
 <div class="box"><b>💍 Proposal</b><div class="hint">Add a proposal question and response buttons. Optional.</div><div id="proposalBox" style="display:block"><label>Proposal question</label><input id="proposalQuestion" placeholder="Will you marry me? 💍❤️"><div class="row"><div><label>Yes button</label><input id="yesText" placeholder="Yes ❤️"></div><div><label>Maybe button</label><input id="noText" placeholder="Maybe 🙈"></div></div></div></div>
-<div class="box"><b>🎵 Custom audio</b><div class="hint">Upload your own music here. Max 5 MB, one file. It will appear as the music option on the final page.</div>
+<div class="box"><b>🎵 Custom audio</b><div class="hint">Upload your own music here. Max 5 MB, one file. Adding another file replaces the previous one. It will appear as the music option on the final page.</div>
 <div class="media-actions"><label class="filebtn">Choose audio<input id="customAudio" type="file" accept="audio/*"></label><button id="removeAudio" class="remove-audio" type="button" style="display:none">Remove</button><span id="audioName" class="hint">No file selected</span></div><audio id="audioPreview" class="audio-preview" controls></audio></div>
 
 <div class="box"><b>🖼️ Memories</b><div class="hint">Up to 8 photos/videos total. Photos: 5 MB each. Videos: 15 MB each. Media is uploaded directly to Cloudflare storage.</div>
@@ -60,7 +60,7 @@ input,textarea,select{width:100%;padding:13px 14px;margin:6px 0 11px;border:1px 
 <script>
 const adminToken=()=>localStorage.getItem("wishingstar_admin_token")||"";const $=id=>document.getElementById(id),editId=new URLSearchParams(location.search).get("edit");
 let photos=[],videos=[],customAudioData="",sections={},editUpdatedAt="";
-const MAX_IMAGE=5*1024*1024,MAX_VIDEO=15*1024*1024,MAX_AUDIO=5*1024*1024,MAX_MEDIA=8;
+const MAX_IMAGE=5*1024*1024,MAX_VIDEO=15*1024*1024,MAX_AUDIO=5*1024*1024,MAX_MEDIA=8;let uploadStatus="";
 const META={love:["💗","Why I Love You","Tell them the little reasons you love them..."],like:["🥰","Why I Like You","What made you fall for them? 🥰"],special:["🌸","Why You’re Special","What makes them one of a kind? ✨"],adore:["🫶","Things I Adore","The little things you adore..."],favorite:["🎀","My Favorite Things","Favorite habits, moments and memories..."],promises:["🤞","Our Little Promises","Little promises you want to keep..."]};
 function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
 function showError(m){$("errorBox").textContent=m;$("errorBox").style.display="block"}function hideError(){$("errorBox").style.display="none"}
@@ -80,18 +80,28 @@ function validate(){for(const [id,n] of [["recipient","Recipient"],["sender","Yo
 function payload(){const sec={};document.querySelectorAll(".sectionText").forEach(x=>{if(x.value.trim())sec[x.dataset.key]=x.value.trim()});return{type:$("type").value,theme:$("theme").value,recipient:$("recipient").value.trim(),sender:$("sender").value.trim(),title:$("title").value.trim(),message:$("message").value.trim(),sections:sec,photos,videos,customAudio:customAudioData,date:$("date").value,musicUrl:$("musicUrl").value.trim(),proposalQuestion:$("proposalQuestion").value.trim(),proposalEnabled:!!$("proposalQuestion").value.trim(),yesText:$("yesText").value.trim()||"Yes ❤️",noText:$("noText").value.trim()||"Maybe 🙈",dateInvite:$("dateNightEnabled").checked?{date:$("inviteDate").value,time:$("inviteTime").value,place:$("invitePlace").value.trim(),message:$("inviteMessage").value.trim()}:null}}
 async function load(){if(!editId)return;try{const r=await fetch("/api/pages/"+encodeURIComponent(editId),{cache:"no-store"});if(!r.ok)throw 0;const p=await r.json();editUpdatedAt=p.updatedAt||"";for(const k of ["type","theme","recipient","sender","title","message","date","musicUrl","proposalQuestion","yesText","noText"])if($(k)&&p[k]!=null)$(k).value=p[k];photos=p.photos||[];videos=p.videos||[];customAudioData=p.customAudio||"";sections=p.sections||{};document.querySelectorAll(".sectionPick").forEach(e=>e.checked=!!sections[e.value]);$("dateNightEnabled").checked=!!p.dateInvite;if(p.dateInvite){$("inviteDate").value=p.dateInvite.date||"";$("inviteTime").value=p.dateInvite.time||"";$("invitePlace").value=p.dateInvite.place||"";$("inviteMessage").value=p.dateInvite.message||""}if(customAudioData){$("audioPreview").src=customAudioData;$("audioPreview").style.display="block";$("audioName").textContent="Existing custom audio";$("removeAudio").style.display="inline-block"}renderSections();$("formTitle").textContent="Edit your surprise";$("saveBtn").textContent="Save changes ✨";pv()}catch(e){showError("Could not load this WishingStar. Please refresh and try again.")}}
 async function uploadAssets(){
-  const upload=async(data,folder)=>{
+  const upload=async(data,folder,label)=>{
     if(typeof data!=="string"||!data.startsWith("data:"))return data;
-    const r=await fetch("/api/media",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":adminToken()},body:JSON.stringify({data,folder})});
-    const d=await r.json().catch(()=>({}));
-    if(!r.ok)throw Error(d.error||"Could not upload media.");
-    return d.url;
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),120000);
+    try{
+      const r=await fetch("/api/media",{method:"POST",headers:{"Content-Type":"application/json","X-Admin-Token":adminToken()},body:JSON.stringify({data,folder}),signal:controller.signal});
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok)throw Error(d.error||"Could not upload "+label+".");
+      if(!d.url)throw Error("Storage did not return a URL for "+label+".");
+      return d.url;
+    }catch(e){
+      if(e.name==="AbortError")throw Error(label+" upload timed out. Please try again.");
+      throw e;
+    }finally{clearTimeout(timer);}
   };
-  photos=await Promise.all(photos.map(x=>upload(x,"photos")));
-  videos=await Promise.all(videos.map(x=>upload(x,"videos")));
-  if(customAudioData&&customAudioData.startsWith("data:"))customAudioData=await upload(customAudioData,"audio");
+  const total=photos.filter(x=>x.startsWith("data:")).length+videos.filter(x=>x.startsWith("data:")).length+(customAudioData&&customAudioData.startsWith("data:")?1:0);
+  let done=0;
+  const step=async(data,folder,label)=>{if(typeof data==="string"&&!data.startsWith("data:"))return data;done++;$("saveBtn").textContent="Uploading "+done+"/"+total+" "+label+"…";return upload(data,folder,label);};
+  photos=await Promise.all(photos.map(x=>step(x,"photos","photo")));
+  videos=await Promise.all(videos.map(x=>step(x,"videos","video")));
+  if(customAudioData&&customAudioData.startsWith("data:"))customAudioData=await step(customAudioData,"audio","audio");
 }
-async function save(){hideError();if(!validate())return;const b=$("saveBtn");b.disabled=true;b.textContent=editId?"Saving…":"Creating your WishingStar…";try{await uploadAssets();const r=await fetch(editId?"/api/pages/"+editId:"/api/pages",{method:editId?"PUT":"POST",headers:Object.assign({"Content-Type":"application/json","X-Admin-Token":adminToken()},editId&&editUpdatedAt?{"If-Unmodified-Since":editUpdatedAt}:{}),body:JSON.stringify(payload())});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Could not save your surprise.");if(editId&&d.updatedAt)editUpdatedAt=d.updatedAt;showResult(d.id||editId)}catch(e){showError(e.message||"Something went wrong.");b.disabled=false;b.textContent=editId?"Save changes ✨":"Create WishingStar ✨"}}
+async function save(){hideError();if(!validate())return;const b=$("saveBtn");b.disabled=true;b.textContent=editId?"Saving…":"Creating your WishingStar…";try{await uploadAssets();b.textContent=editId?"Saving your WishingStar…":"Creating your WishingStar…";const r=await fetch(editId?"/api/pages/"+editId:"/api/pages",{method:editId?"PUT":"POST",headers:Object.assign({"Content-Type":"application/json","X-Admin-Token":adminToken()},editId&&editUpdatedAt?{"If-Unmodified-Since":editUpdatedAt}:{}),body:JSON.stringify(payload())});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Could not save your surprise.");if(editId&&d.updatedAt)editUpdatedAt=d.updatedAt;showResult(d.id||editId)}catch(e){showError(e.message||"Something went wrong.");b.disabled=false;b.textContent=editId?"Save changes ✨":"Create WishingStar ✨"}}
 function showResult(id){$("result").style.display="block";$("result").innerHTML='<b>✨ Your WishingStar is ready!</b><p><a target="_blank" href="/s/'+id+'">Open your surprise →</a></p><img class="qr" src="/api/pages/'+id+'/qr"><p><a target="_blank" href="/api/pages/'+id+'/qr-card"><button type="button">💗 Open QR Card</button></a></p><button type="button" onclick="navigator.clipboard?.writeText(location.origin+\'/s/'+id+'\')">Copy link</button>'}
 renderSections();pv();load();$("saveBtn").addEventListener("click",save);
 </script></body></html>
