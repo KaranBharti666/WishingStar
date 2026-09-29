@@ -69,7 +69,7 @@ const themeStickers=THEMES[p.theme]||THEMES.rose;
 document.body.classList.add("occasion-"+(p.type||"custom"));
 addFloatingStickers([...occ.stickers,...themeStickers]);
 const tiles=[["memories","🖼️","Our Memories"],["letter","💌","My Letter"]];
-const panels=[["memories","🖼️","Our Memories",'<div class="gallery" id="gallery"></div><p id="noPhotos" style="text-align:center;color:#987681">No photos were added to this surprise.</p>'],["letter","💌","My Letter",'<div class="letter" id="letterText"></div>']];
+const panels=[["memories","🖼️","Our Memories",'<div class="gallery" id="gallery"></div><p id="noPhotos" style="text-align:center;color:#987681">No photos or videos were added to this surprise.</p>'],["letter","💌","My Letter",'<div class="letter" id="letterText"></div>']];
 const videos=Array.isArray(p.videos)?p.videos:[];
 if(videos.length){const memoryPanel=panels.find(x=>x[0]==="memories");if(memoryPanel)memoryPanel[3]+='<div style="display:grid;gap:16px;margin-top:16px">'+videos.map(v=>'<video src="'+v+'" controls playsinline preload="metadata" style="width:100%;max-height:520px;border-radius:18px;background:#000;box-shadow:0 10px 30px #7b304520"></video>').join("")+'</div>';}
 Object.entries(p.sections||{}).forEach(([k,v])=>{if(v&&SECTION_META[k]){const m=SECTION_META[k],pid="section-"+k;tiles.push([pid,m[0],m[1]]);panels.push([pid,m[0],m[1],'<div class="letter">'+esc(v)+'</div>'])}});
@@ -98,7 +98,7 @@ $("letterText").textContent=p.message||"";
 
 const photos=p.photos||[];
 $("gallery").innerHTML=photos.map(x=>'<img src="'+x+'" alt="Memory">').join("");
-$("noPhotos").style.display=photos.length?"none":"block";
+$("noPhotos").style.display=(photos.length||(Array.isArray(p.videos)&&p.videos.length))?"none":"block";
 if(p.musicUrl||p.customAudio){
 const box=$("music");
 if(p.customAudio){const wrap=document.createElement("div");wrap.style.cssText="background:#ffffffcc;border:1px solid #ffd1df;border-radius:18px;padding:14px;margin:10px auto;max-width:620px";wrap.innerHTML='<div style="font-weight:700;margin-bottom:8px">🎵 Custom audio</div>';const ca=document.createElement("audio");ca.controls=true;ca.preload="metadata";ca.src=p.customAudio;ca.style.width="100%";wrap.appendChild(ca);box.appendChild(wrap)}
