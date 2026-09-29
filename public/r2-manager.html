@@ -6,6 +6,7 @@ const type=f=>/\.(jpg|jpeg|png|gif|webp|avif|bmp|svg)$/i.test(f.key)?"image":/\.
 const size=n=>n<1024?n+" B":n<1048576?(n/1024).toFixed(1)+" KB":n<1073741824?(n/1048576).toFixed(1)+" MB":(n/1073741824).toFixed(2)+" GB";
 function render(){const x=files.filter(f=>!q.value||f.key.toLowerCase().includes(q.value.toLowerCase()));grid.innerHTML=x.length?x.map(f=>{const t=type(f);let p=t==="image"?'<img src="'+f.url+'">':t==="video"?'<video src="'+f.url+'" controls></video>':t==="audio"?'<audio src="'+f.url+'" controls></audio>':'📄';return '<article class="card"><div class="preview">'+p+'</div><div class="body"><div class="key">'+esc(f.key)+'</div><div class="meta">'+size(f.size)+'</div><a class="btn" href="'+f.url+'" target="_blank">Open</a><button class="btn" onclick="copyUrl('+JSON.stringify(f.url)+')">Copy URL</button></div></article>'}).join(""):'<div class="empty" style="grid-column:1/-1">No R2 files found.</div>'}
 async function copyUrl(u){try{await navigator.clipboard.writeText(u);alert("URL copied")}catch(e){prompt("Copy URL:",u)}}
-async function load(){const r=await fetch("/api/r2/files"),j=await r.json();if(!r.ok)throw Error(j.error||"Unable to load R2 files");files=j.files||[];render()}
+const adminToken=()=>localStorage.getItem("wishingstar_admin_token")||"";
+async function load(){const r=await fetch("/api/r2/files",{headers:{"X-Admin-Token":adminToken()}}),j=await r.json();if(r.status===401){location.href="/admin.html";return}if(!r.ok)throw Error(j.error||"Unable to load R2 files");files=j.files||[];render()}
 q.oninput=render;load().catch(e=>grid.innerHTML='<div class="empty" style="grid-column:1/-1">'+esc(e.message)+'</div>');
 </script></body></html>
