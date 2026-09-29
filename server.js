@@ -38,6 +38,7 @@ const clean=b=>({
   recipient:String(b?.recipient||"").slice(0,80),
   sender:String(b?.sender||"").slice(0,80),
   title:String(b?.title||"").slice(0,140),
+  customOccasion:String(b?.customOccasion||"").slice(0,80),
   message:String(b?.message||"").slice(0,6000),
   loveText:String(b?.loveText||"").slice(0,6000),
   date:String(b?.date||"").slice(0,40),
