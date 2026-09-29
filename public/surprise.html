@@ -90,7 +90,7 @@ function render(p){
 
  const photos=Array.isArray(p.photos)?p.photos:[],videos=Array.isArray(p.videos)?p.videos:[];
  const memories=[...photos.map(x=>({src:x,type:"image"})),...videos.map(x=>({src:x,type:"video"}))];
- $("gallery").innerHTML=memories.map((m,i)=>'<button class="memory-thumb" type="button" data-memory-index="'+i+'">'+(m.type==="image"?'<img src="'+esc(m.src)+'" alt="Memory">':'<video src="'+esc(m.src)+'" muted playsinline preload="metadata"></video>')+'<span class="memory-label">'+(m.type==="image"?"📸 Memory "+(i+1):"🎬 Memory "+(i+1))+' · tap to open 💗</span></button>').join("");
+ $("gallery").innerHTML=memories.map((m,i)=>\`<button class="memory-thumb" type="button" data-memory-index="\${i}">\${m.type==="image"?\`<img src="\${esc(m.src)}" alt="Memory">\`:\`<video src="\${esc(m.src)}" muted playsinline preload="metadata"></video>\`}<span class="memory-label">\${m.type==="image"?"📸 Memory "+(i+1):"🎬 Memory "+(i+1)} · tap to open 💗</span></button>\`).join("");
  document.querySelectorAll(".memory-thumb").forEach(b=>b.addEventListener("click",()=>openMemory(memories[Number(b.dataset.memoryIndex)],Number(b.dataset.memoryIndex))));
  $("noPhotos").style.display=memories.length?"none":"block";
  $("letterText").textContent=p.message||"";
