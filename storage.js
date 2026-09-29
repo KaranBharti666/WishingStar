@@ -1,6 +1,6 @@
 const fs=require("fs"),path=require("path"),crypto=require("crypto");
 const {google}=require("googleapis");
-const {S3Client,PutObjectCommand}=require("@aws-sdk/client-s3");
+const {S3Client,PutObjectCommand,ListObjectsV2Command,DeleteObjectCommand}=require("@aws-sdk/client-s3");
 const {Pool}=require("pg");
 
 const LOCAL_DB=path.join(__dirname,"data/pages.json");
@@ -104,6 +104,29 @@ function dataUrlParts(v){
  const m=String(v||"").match(/^data:([^;,]+)(?:;[^,]+)*;base64,(.+)$/s);
  return m?{mime:m[1],data:Buffer.from(m[2],"base64")}:null;
 }
+async function listR2Files(){
+ if(!R2_READY)throw new Error("Cloudflare R2 is not configured");
+ const files=[];let token;
+ do{
+   const r=await r2Client().send(new ListObjectsV2Command({Bucket:process.env.R2_BUCKET,ContinuationToken:token,MaxKeys:1000}));
+   for(const o of (r.Contents||[])){
+     const key=o.Key||"";
+     files.push({
+       key,
+       size:Number(o.Size||0),
+       lastModified:o.LastModified||null,
+       url:process.env.R2_PUBLIC_BASE_URL.replace(/\/$/,"")+"/"+key.split("/").map(encodeURIComponent).join("/")
+     });
+   }
+   token=r.NextContinuationToken;
+ }while(token);
+ return files;
+}
+async function deleteR2File(key){
+ if(!R2_READY)throw new Error("Cloudflare R2 is not configured");
+ if(typeof key!=="string"||!key||key.includes("..")||key.startsWith("/"))throw new Error("Invalid R2 key");
+ await r2Client().send(new DeleteObjectCommand({Bucket:process.env.R2_BUCKET,Key:key}));
+}
 async function uploadDataUrl(v,folder,id){
  if(typeof v!=="string"||!v.startsWith("data:"))return v;
  const p=dataUrlParts(v);if(!p)return v;
@@ -147,4 +170,4 @@ async function migrateLocalIfNeeded(){
  await driveWrite(migrated);
  console.log("WishingStar storage migration: local pages copied to Google Drive + media to Cloudflare R2");
 }
-module.exports={readPages,writePages,hydratePage,migrateLocalIfNeeded,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
+module.exports={readPages,writePages,hydratePage,migrateLocalIfNeeded,listR2Files,deleteR2File,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
