@@ -181,8 +181,9 @@ async function backupR2ToGoogleDrive({olderThanDays=30,dryRun=false}={}){
      const safeName=fileName.replace(/[\\/:*?"<>|]/g,"_");
      const escapedFile=safeName.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
      const q="name='"+escapedFile+"' and '"+folderId+"' in parents and trashed=false";
-     const existing=await drive.files.list({q,spaces:"drive",pageSize:1,fields:"files(id,name)"});
-     if(!existing.data.files?.length){
+     const existing=await drive.files.list({q,spaces:"drive",pageSize:20,fields:"files(id,name,description)"});
+     const isOurBackup=existing.data.files?.some(x=>x.description==="WishingStar R2 backup: "+f.key);
+     if(!isOurBackup){
        const obj=await r2Client().send(new GetObjectCommand({Bucket:process.env.R2_BUCKET,Key:f.key}));
        await drive.files.create({
          requestBody:{name:safeName,parents:[folderId],description:"WishingStar R2 backup: "+f.key},
