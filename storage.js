@@ -108,12 +108,13 @@ async function createPage(p){
  if(GOOGLE_READY){try{await driveWrite(await readDatabase())}catch(e){console.error("Google Drive backup failed",e.message)}}
  return p;
 }
-async function updatePage(id,p){
+async function updatePage(id,p,expectedUpdatedAt=null){
  await ensureDatabase();
  if(!DATABASE_READY){const d=await readPages();if(!d[id])return null;d[id]=p;await writePages(d);return p}
  const db=getDb();
- const r=await db.query("UPDATE wishingstar_pages SET data=$2::jsonb,updated_at=$3 WHERE id=$1 RETURNING data",
-   [id,JSON.stringify(p),new Date(p.updatedAt)]);
+ const r=expectedUpdatedAt
+   ? await db.query("UPDATE wishingstar_pages SET data=$2::jsonb,updated_at=$3 WHERE id=$1 AND updated_at=$4 RETURNING data",[id,JSON.stringify(p),new Date(p.updatedAt),new Date(expectedUpdatedAt)])
+   : await db.query("UPDATE wishingstar_pages SET data=$2::jsonb,updated_at=$3 WHERE id=$1 RETURNING data",[id,JSON.stringify(p),new Date(p.updatedAt)]);
  if(!r.rowCount)return null;
  if(GOOGLE_READY){try{await driveWrite(await readDatabase())}catch(e){console.error("Google Drive backup failed",e.message)}}
  return r.rows[0].data;
