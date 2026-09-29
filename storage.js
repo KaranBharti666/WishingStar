@@ -249,4 +249,4 @@ async function migrateLocalIfNeeded(){
  await driveWrite(migrated);
  console.log("WishingStar storage migration: local pages copied to Google Drive + media to Cloudflare R2");
 }
-module.exports={readPages,writePages,createPage,updatePage,deletePage,hydratePage,migrateLocalIfNeeded,listR2Files,deleteR2File,backupR2ToGoogleDrive,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
+module.exports={readPages,writePages,createPage,updatePage,deletePage,hydratePage,uploadMedia:uploadDataUrl,migrateLocalIfNeeded,listR2Files,deleteR2File,backupR2ToGoogleDrive,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
