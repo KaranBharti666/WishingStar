@@ -97,6 +97,36 @@ async function writeDatabase(data){
    await client.query("COMMIT");
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
 }
+async function createPage(p){
+ await ensureDatabase();
+ if(!DATABASE_READY){const d=await readPages();d[p.id]=p;await writePages(d);return p}
+ const db=getDb(),client=await db.connect();
+ try{
+   await client.query("INSERT INTO wishingstar_pages (id,data,created_at,updated_at) VALUES ($1,$2::jsonb,$3,$4)",
+     [p.id,JSON.stringify(p),new Date(p.createdAt),new Date(p.updatedAt)]);
+ }finally{client.release()}
+ if(GOOGLE_READY){try{await driveWrite(await readDatabase())}catch(e){console.error("Google Drive backup failed",e.message)}}
+ return p;
+}
+async function updatePage(id,p){
+ await ensureDatabase();
+ if(!DATABASE_READY){const d=await readPages();if(!d[id])return null;d[id]=p;await writePages(d);return p}
+ const db=getDb();
+ const r=await db.query("UPDATE wishingstar_pages SET data=$2::jsonb,updated_at=$3 WHERE id=$1 RETURNING data",
+   [id,JSON.stringify(p),new Date(p.updatedAt)]);
+ if(!r.rowCount)return null;
+ if(GOOGLE_READY){try{await driveWrite(await readDatabase())}catch(e){console.error("Google Drive backup failed",e.message)}}
+ return r.rows[0].data;
+}
+async function deletePage(id){
+ await ensureDatabase();
+ if(!DATABASE_READY){const d=await readPages();if(!d[id])return false;delete d[id];await writePages(d);return true}
+ const db=getDb();
+ const r=await db.query("DELETE FROM wishingstar_pages WHERE id=$1",[id]);
+ if(!r.rowCount)return false;
+ if(GOOGLE_READY){try{await driveWrite(await readDatabase())}catch(e){console.error("Google Drive backup failed",e.message)}}
+ return true;
+}
 function r2Client(){
  return new S3Client({region:"auto",endpoint:"https://"+process.env.R2_ACCOUNT_ID+".r2.cloudflarestorage.com",credentials:{accessKeyId:process.env.R2_ACCESS_KEY_ID,secretAccessKey:process.env.R2_SECRET_ACCESS_KEY}});
 }
@@ -217,4 +247,4 @@ async function migrateLocalIfNeeded(){
  await driveWrite(migrated);
  console.log("WishingStar storage migration: local pages copied to Google Drive + media to Cloudflare R2");
 }
-module.exports={readPages,writePages,hydratePage,migrateLocalIfNeeded,listR2Files,deleteR2File,backupR2ToGoogleDrive,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
+module.exports={readPages,writePages,createPage,updatePage,deletePage,hydratePage,migrateLocalIfNeeded,listR2Files,deleteR2File,backupR2ToGoogleDrive,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
