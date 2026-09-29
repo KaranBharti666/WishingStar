@@ -24,15 +24,15 @@
 
 </head>
 <body>
-<section class="welcome" id="welcome"><div class="welcome-card"><div class="welcome-stickers">🎀 💕 🐼 ✨ 🐱 💗</div><div style="font:600 30px Caveat;color:#d83f6c">WishingStar ✦</div><h1 id="welcomeTitle">A little surprise for you 💗</h1><p id="welcomeText">Someone who loves you made something special just for you. Take a breath, smile… and open your little gift. 🎁</p><button class="open-gift" id="openGift" type="button" onclick="this.closest('.welcome').classList.add('hide');setTimeout(()=>{const w=this.closest('.welcome');if(w)w.remove()},650);return false">Open Your Gift 🎁✨</button></div></section><div class="page-transition" id="pageTransition"><div class="transition-heart">💗</div><span class="transition-spark" style="--tx:-110px;--ty:-70px">✨</span><span class="transition-spark" style="--tx:110px;--ty:-55px">💕</span><span class="transition-spark" style="--tx:-90px;--ty:75px">🎀</span><span class="transition-spark" style="--tx:95px;--ty:65px">🌸</span></div><div class="sticker-layer" id="stickerLayer"><div class="character-sticker teddy" aria-hidden="true">🧸<span class="spark s1">✨</span><span class="spark s2">🌸</span></div><div class="character-sticker panda" aria-hidden="true">🐼<span class="spark s1">✨</span><span class="spark s2">💕</span></div></div><main class="wrap gift-page" id="giftPage">
+<section class="welcome" id="welcome"><div class="welcome-card"><div class="welcome-stickers">🎀 💕 🐼 ✨ 🐱 💗</div><div style="font:600 30px Caveat;color:#d83f6c">WishingStar ✦</div><h1 id="welcomeTitle">A little surprise for you 💗</h1><p id="welcomeText">Someone who loves you made something special just for you. Take a breath, smile… and open your little gift. 🎁</p><button class="open-gift" id="openGift" type="button" onclick="var w=this.closest('.welcome');if(w){w.style.setProperty('display','none','important');w.remove();}return false">Open Your Gift 🎁✨</button></div></section><div class="page-transition" id="pageTransition"><div class="transition-heart">💗</div><span class="transition-spark" style="--tx:-110px;--ty:-70px">✨</span><span class="transition-spark" style="--tx:110px;--ty:-55px">💕</span><span class="transition-spark" style="--tx:-90px;--ty:75px">🎀</span><span class="transition-spark" style="--tx:95px;--ty:65px">🌸</span></div><div class="sticker-layer" id="stickerLayer"><div class="character-sticker teddy" aria-hidden="true">🧸<span class="spark s1">✨</span><span class="spark s2">🌸</span></div><div class="character-sticker panda" aria-hidden="true">🐼<span class="spark s1">✨</span><span class="spark s2">💕</span></div></div><main class="wrap gift-page" id="giftPage">
 <section class="hero">
 <div class="logo">WishingStar ✦</div>
 <div class="heart">💗</div>
 <div class="eyebrow" id="eyebrow">A little surprise made just for you</div>
 <p class="sub">Explore the little things I love about us.</p>
 </section>
-<div id="error" class="error"></div>
-<section class="menu" id="menu" style="display:none"></section>
+<div id="error" class="error"></div><div id="loadingState" style="text-align:center;padding:24px;color:#765964">Loading your surprise… 💗</div>
+<section class="menu" id="menu" style="display:grid"></section>
 <div id="panels"></div>
 <div class="music" id="music"></div>
 </main>
@@ -109,11 +109,11 @@ if(p.musicUrl){const u=p.musicUrl.trim();if(/youtu\\.be|youtube\\.com/i.test(u))
 if(false&&p.type==="proposal")$("proposal").innerHTML='<h2>'+esc(p.proposalQuestion||"Will you be mine forever?")+'</h2><div class="actions"><button class="yes" id="yesBtn">'+esc(p.yesText||"Yes ❤️")+'</button><button class="no" id="noBtn">'+esc(p.noText||"Maybe 🙈")+'</button></div>';
 if(p.proposalQuestion&&p.proposalQuestion.trim()){document.getElementById("yesBtn").onclick=celebrate;document.getElementById("noBtn").onclick=moveNo}
 $("menu").style.display="grid";
-}catch(e){console.error(e);$("giftPage").style.visibility="visible";$("giftPage").style.opacity="1";$("error").style.display="block";$("error").innerHTML="<b>This surprise could not be loaded.</b><br>Please open the link again in Chrome."}
+$("loadingState").style.display="none";
+}catch(e){console.error(e);$("giftPage").style.visibility="visible";$("giftPage").style.opacity="1";$("loadingState").style.display="none";$("error").style.display="block";$("error").innerHTML="<b>This surprise could not be loaded.</b><br>Please open the link again in Chrome."}
 }
 function moveNo(){const b=$("noBtn");b.style.transform="translate("+((Math.random()*140)-70)+"px,"+((Math.random()*80)-40)+"px)"}
 function celebrate(){for(let i=0;i<30;i++){const e=document.createElement("span");e.className="spark";e.textContent=["💖","✨","💕","🌸"][i%4];e.style.left=Math.random()*100+"vw";e.style.top="-20px";e.style.animationDelay=Math.random()*.5+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),2300)}$("proposal").innerHTML="<h2>Yay! 💖✨</h2><p>You've just made this moment unforgettable.</p>"}
-const openGiftButton=$("openGift");if(openGiftButton)openGiftButton.addEventListener("click",openGift,{passive:false});
 load();
 </script>
 </body>
