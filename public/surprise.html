@@ -95,7 +95,7 @@ function render(p){
  $("noPhotos").style.display=memories.length?"none":"block";
  $("letterText").textContent=p.message||"";
  if(p.proposalQuestion&&p.proposalQuestion.trim()){ $("yesBtn").onclick=celebrate; $("noBtn").onclick=moveNo; }
- if(p.dateInvite){const db=document.createElement("button");db.type="button";db.id="dateYesBtn";db.className="date-yes";db.textContent="Yes, I'm coming! 💕";const dc=document.querySelector("#dateInvite .date-card");if(dc)dc.appendChild(db);db.onclick=()=>{db.textContent="Yay! I'm coming! 🥰💗";db.classList.add("accepted");}}
+ if(p.dateInvite){const db=$("dateYesBtn"),dn=$("dateNoBtn");if(db)db.onclick=()=>{db.textContent="Yay! I’m coming! 🥰💗";db.classList.add("accepted");if(dn)dn.style.display="none";};if(dn)dn.onclick=moveDateNo;}
  $("menu").style.display="grid";
  $("loadingState").style.display="none";
 }
@@ -130,16 +130,17 @@ function openMemory(memory,index){
  save.onclick=()=>saveMemory(memory,index);
 }
 function closeMemoryViewer(){const v=$("memoryViewer");if(v)v.classList.remove("show");document.body.style.overflow="";}
+function moveDateNo(){const b=$("dateNoBtn");if(b)b.style.transform="translate("+(Math.random()*140-70)+"px,"+(Math.random()*80-40)+"px)";}
 async function saveMemory(memory,index){
  const b=$("memorySave");if(!b)return;b.disabled=true;b.textContent="Preparing… 💗";
  try{
   if(memory.type==="image"){
-   const img=new Image();img.crossOrigin="anonymous";img.src=memory.src;await new Promise((ok,no)=>{img.onload=ok;img.onerror=no});
+   const img=new Image();img.crossOrigin="anonymous";img.src="/api/media-proxy?url="+encodeURIComponent(memory.src);await new Promise((ok,no)=>{img.onload=ok;img.onerror=no});
    const pad=54,w=img.naturalWidth,h=img.naturalHeight,c=document.createElement("canvas"),ctx=c.getContext("2d");
    c.width=w+pad*2;c.height=h+pad*2;ctx.fillStyle="#fff4f8";ctx.fillRect(0,0,c.width,c.height);ctx.strokeStyle="#e9abc1";ctx.lineWidth=8;ctx.strokeRect(16,16,c.width-32,c.height-32);ctx.strokeStyle="#f7d4e1";ctx.lineWidth=2;ctx.strokeRect(30,30,c.width-60,c.height-60);ctx.drawImage(img,pad,pad,w,h);
    const a=document.createElement("a");a.download="WishingStar-Memory-"+(index+1)+".jpg";a.href=c.toDataURL("image/jpeg",.92);a.click();
   }else{
-   const a=document.createElement("a");a.href=memory.src;a.download="WishingStar-Memory-"+(index+1)+".mp4";a.target="_blank";a.rel="noopener";a.click();
+   const a=document.createElement("a");a.href="/api/media-proxy?download=1&url="+encodeURIComponent(memory.src);a.download="WishingStar-Memory-"+(index+1)+".mp4";a.click();
   }
   b.textContent="✓ Saved";setTimeout(()=>{b.textContent="💾 Save to my phone";b.disabled=false},1200);
  }catch(e){console.error(e);b.disabled=false;b.textContent="💾 Save to my phone";alert("Could not save this memory. Please use the browser's save/download option.");}
