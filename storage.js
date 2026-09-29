@@ -1,6 +1,6 @@
 const fs=require("fs"),path=require("path"),crypto=require("crypto");
 const {google}=require("googleapis");
-const {S3Client,PutObjectCommand,ListObjectsV2Command,DeleteObjectCommand}=require("@aws-sdk/client-s3");
+const {S3Client,PutObjectCommand,ListObjectsV2Command,DeleteObjectCommand,GetObjectCommand}=require("@aws-sdk/client-s3");
 const {Pool}=require("pg");
 
 const LOCAL_DB=path.join(__dirname,"data/pages.json");
@@ -8,7 +8,7 @@ const GOOGLE_READY=!!(process.env.GOOGLE_CLIENT_ID&&process.env.GOOGLE_CLIENT_SE
 const R2_READY=!!(process.env.R2_ACCOUNT_ID&&process.env.R2_ACCESS_KEY_ID&&process.env.R2_SECRET_ACCESS_KEY&&process.env.R2_BUCKET&&process.env.R2_PUBLIC_BASE_URL);
 const DATABASE_READY=!!process.env.DATABASE_URL;
 
-let driveFileId=null,drivePromise=null,dbPromise=null;
+let driveFileId=null,drivePromise=null,dbPromise=null,backupRootId=null,backupFolderIds={};
 
 function localRead(){fs.mkdirSync(path.dirname(LOCAL_DB),{recursive:true});if(!fs.existsSync(LOCAL_DB))fs.writeFileSync(LOCAL_DB,"{}");return JSON.parse(fs.readFileSync(LOCAL_DB,"utf8"))}
 function localWrite(x){fs.mkdirSync(path.dirname(LOCAL_DB),{recursive:true});fs.writeFileSync(LOCAL_DB,JSON.stringify(x,null,2))}
@@ -122,6 +122,53 @@ async function listR2Files(){
  }while(token);
  return files;
 }
+async function getOrCreateDriveFolder(name,parentId=null){
+ const drive=await getDrive();if(!drive)throw new Error("Google Drive is not configured");
+ const escaped=name.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+ const parentQuery=parentId ? " and '"+parentId+"' in parents" : " and 'root' in parents";
+ const q="name='"+escaped+"' and mimeType='application/vnd.google-apps.folder' and trashed=false"+parentQuery;
+ const found=await drive.files.list({q,spaces:"drive",pageSize:1,fields:"files(id,name)"});
+ if(found.data.files?.[0])return found.data.files[0].id;
+ const r=await drive.files.create({requestBody:{name,mimeType:"application/vnd.google-apps.folder",parents:parentId?[parentId]:["root"]},fields:"id"});
+ return r.data.id;
+}
+async function backupR2ToGoogleDrive({olderThanDays=30,dryRun=false}={}){
+ if(!R2_READY)throw new Error("Cloudflare R2 is not configured");
+ if(!GOOGLE_READY)throw new Error("Google Drive is not configured");
+ const drive=await getDrive();
+ if(!backupRootId)backupRootId=await getOrCreateDriveFolder("WishingStar Backups");
+ const cutoff=Date.now()-olderThanDays*24*60*60*1000;
+ const files=await listR2Files();
+ const old=files.filter(f=>f.lastModified&&new Date(f.lastModified).getTime()<=cutoff);
+ const stats={checked:files.length,eligible:old.length,backedUp:0,deleted:0,failed:0,errors:[]};
+ for(const f of old){
+   try{
+     const folderName=f.key.startsWith("photos/")?"photos":f.key.startsWith("videos/")?"videos":f.key.startsWith("audio/")?"audio":"other";
+     if(!backupFolderIds[folderName])backupFolderIds[folderName]=await getOrCreateDriveFolder(folderName,backupRootId);
+     const folderId=backupFolderIds[folderName];
+     const fileName=f.key.split("/").pop()||"backup-file";
+     const safeName=fileName.replace(/[\\/:*?"<>|]/g,"_");
+     const escapedFile=safeName.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+     const q="name='"+escapedFile+"' and '"+folderId+"' in parents and trashed=false";
+     const existing=await drive.files.list({q,spaces:"drive",pageSize:1,fields:"files(id,name)"});
+     if(!existing.data.files?.length){
+       const obj=await r2Client().send(new GetObjectCommand({Bucket:process.env.R2_BUCKET,Key:f.key}));
+       await drive.files.create({
+         requestBody:{name:safeName,parents:[folderId],description:"WishingStar R2 backup: "+f.key},
+         media:{mimeType:obj.ContentType||"application/octet-stream",body:obj.Body},
+         fields:"id,name"
+       });
+     }
+     stats.backedUp++;
+     if(!dryRun){await deleteR2File(f.key);stats.deleted++;}
+   }catch(e){
+     stats.failed++;stats.errors.push({key:f.key,error:e.message});
+     console.error("R2 backup failed",f.key,e.message);
+   }
+ }
+ return stats;
+}
+
 async function deleteR2File(key){
  if(!R2_READY)throw new Error("Cloudflare R2 is not configured");
  if(typeof key!=="string"||!key||key.includes("..")||key.startsWith("/"))throw new Error("Invalid R2 key");
@@ -170,4 +217,4 @@ async function migrateLocalIfNeeded(){
  await driveWrite(migrated);
  console.log("WishingStar storage migration: local pages copied to Google Drive + media to Cloudflare R2");
 }
-module.exports={readPages,writePages,hydratePage,migrateLocalIfNeeded,listR2Files,deleteR2File,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
+module.exports={readPages,writePages,hydratePage,migrateLocalIfNeeded,listR2Files,deleteR2File,backupR2ToGoogleDrive,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
