@@ -2,13 +2,14 @@
 let pages=[],loading=false;
 const q=document.getElementById("q"),f=document.getElementById("f"),list=document.getElementById("list");
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+const adminToken=()=>localStorage.getItem("wishingstar_admin_token")||"";
 async function load(){
  if(loading)return; loading=true; list.innerHTML='<div class="empty">Loading your WishingStars…</div>';
  try{
-   const r=await fetch("/api/pages",{cache:"no-store"}),j=await r.json();
+   const r=await fetch("/api/pages",{headers:{"X-Admin-Token":adminToken()},cache:"no-store"}),j=await r.json();
    if(!r.ok)throw Error(j.error||"Unable to load your WishingStars.");
    pages=Array.isArray(j)?j:[];total.textContent=pages.length;birth.textContent=pages.filter(p=>p.type==="birthday").length;other.textContent=pages.filter(p=>p.type!=="birthday").length;render();
- }catch(e){list.innerHTML='<div class="empty">⚠️ '+esc(e.message||"Could not load your WishingStars.")+'<br><br><button class="primary" id="retry">Retry</button></div>';document.getElementById("retry").onclick=load}
+ }catch(e){if(String(e.message||"").toLowerCase().includes("manager authentication")){location.href="/admin.html";return}list.innerHTML='<div class="empty">⚠️ '+esc(e.message||"Could not load your WishingStars.")+'<br><br><button class="primary" id="retry">Retry</button></div>';document.getElementById("retry").onclick=load}
  finally{loading=false}
 }
 function render(){
@@ -27,7 +28,7 @@ list.addEventListener("click",async e=>{
  else if(action==="delete"){
    if(!confirm("Delete this surprise permanently?"))return;
    b.disabled=true;b.textContent="Deleting…";
-   try{const r=await fetch("/api/pages/"+encodeURIComponent(id),{method:"DELETE"});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.error||"Delete failed.");pages=pages.filter(p=>p.id!==id);total.textContent=pages.length;birth.textContent=pages.filter(p=>p.type==="birthday").length;other.textContent=pages.filter(p=>p.type!=="birthday").length;render()}catch(err){alert(err.message||"Could not delete this surprise.");b.disabled=false;b.textContent="Delete"}
+   try{const r=await fetch("/api/pages/"+encodeURIComponent(id),{method:"DELETE",headers:{"X-Admin-Token":adminToken()}});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.error||"Delete failed.");pages=pages.filter(p=>p.id!==id);total.textContent=pages.length;birth.textContent=pages.filter(p=>p.type==="birthday").length;other.textContent=pages.filter(p=>p.type!=="birthday").length;render()}catch(err){alert(err.message||"Could not delete this surprise.");b.disabled=false;b.textContent="Delete"}
  }
 });
 q.oninput=render;f.onchange=render;load();
