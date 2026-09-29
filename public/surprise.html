@@ -126,7 +126,7 @@ function openMemory(memory,index){
  v.classList.add("show");document.body.style.overflow="hidden";
  cap.textContent=(memory.type==="image"?"📸 Memory ":"🎬 Memory ")+(index+1)+" ♡";
  box.innerHTML=memory.type==="image"?'<img id="memoryMainMedia" src="'+esc(memory.src)+'" alt="Memory">':'<video id="memoryMainMedia" src="'+esc(memory.src)+'" controls playsinline preload="metadata"></video>';
- love.onclick=()=>{love.textContent="💗 Loved!";setTimeout(()=>love.textContent="💗 Love it",900);};
+ love.onclick=async()=>{love.textContent="💗 Loved!";await sendRecipientResponse("memory_love","loved","Love it");setTimeout(()=>love.textContent="💗 Love it",900);};
  save.onclick=()=>saveMemory(memory,index);
 }
 function closeMemoryViewer(){const v=$("memoryViewer");if(v)v.classList.remove("show");document.body.style.overflow="";}
