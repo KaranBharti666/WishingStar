@@ -1,6 +1,6 @@
 const express=require("express"),QRCode=require("qrcode"),path=require("path"),crypto=require("crypto");
 const {readPages,writePages,createPage,updatePage,deletePage,hydratePage,migrateLocalIfNeeded,listR2Files,deleteR2File,configured,googleConfigured,r2Configured}=require("./storage");
-const app=express(),PORT=process.env.PORT||3000,ADMIN_TOKEN=process.env.ADMIN_TOKEN||"";
+const app=express(),PORT=process.env.PORT||3000;
 const requireAdmin=(q,s,next)=>{if(!ADMIN_TOKEN)return s.status(503).json({error:"Manager access is not configured."});if(q.get("x-admin-token")!==ADMIN_TOKEN)return s.status(401).json({error:"Manager authentication required."});next()};\napp.use(express.json({limit:"70mb"}));app.use(express.static(path.join(__dirname,"public"),{setHeaders:(res,filePath)=>{if(filePath.endsWith("index.html")||filePath.endsWith(".js"))res.setHeader("Cache-Control","no-store, no-cache, must-revalidate, proxy-revalidate");}}));
 const read=readPages,write=writePages;
 const safeMedia=v=>{if(typeof v!=="string"||v.length>21000000)return "";if(v.startsWith("data:")){const comma=v.indexOf(",");if(comma<0)return "";const h=v.slice(0,comma).toLowerCase();if(!(h.startsWith("data:image/")||h.startsWith("data:video/")||h.startsWith("data:audio/")))return "";const body=v.slice(comma+1);return new RegExp("^[A-Za-z0-9+/=\\r\\n]+$").test(body)?v:""}try{const u=new URL(v);return u.protocol==="http:"||u.protocol==="https:"?v:""}catch{return ""}};
