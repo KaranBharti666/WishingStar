@@ -93,6 +93,24 @@ app.post("/api/pages",async(q,s)=>{
   }
 });
 
+app.post("/api/pages/:id/responses",async(q,s)=>{
+  try{
+    const d=await readPages(),p=d[q.params.id];
+    if(!p)return s.status(404).json({error:"Not found"});
+    const type=["proposal","date_night","private_message"].includes(q.body?.type)?q.body.type:"private_message";
+    const value=String(q.body?.value||"").trim().slice(0,2000);
+    const label=String(q.body?.label||"").slice(0,100);
+    const name=String(q.body?.name||"").trim().slice(0,80);
+    if(!value)return s.status(400).json({error:"Message is empty"});
+    const responses=Array.isArray(p.responses)?p.responses:[];
+    responses.push({id:crypto.randomBytes(7).toString("base64url"),type,value,label,name,createdAt:new Date().toISOString()});
+    const updated={...p,responses:responses.slice(-200),updatedAt:new Date().toISOString()};
+    const saved=await updatePage(q.params.id,updated);
+    if(!saved)return s.status(404).json({error:"Not found"});
+    s.status(201).json({ok:true});
+  }catch(e){console.error("recipient response",e);s.status(500).json({error:"Could not save the response."});}
+});
+
 app.get("/api/pages/:id",async(q,s)=>{
   try{
     const d=await readPages();
