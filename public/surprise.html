@@ -67,7 +67,7 @@ window.addEventListener("hashchange",()=>{if(activePanelName&&!location.hash)clo
 function burst(){const icons=["💖","✨","💕","🎀","🌸","🐼","🧸","🐱","🦋"];for(let i=0;i<28;i++){const e=document.createElement("span");e.className="gift-burst";e.textContent=icons[i%icons.length];e.style.left="50%";e.style.top="48%";e.style.setProperty("--dx",(Math.random()*520-260)+"px");e.style.setProperty("--dy",(Math.random()*520-300)+"px");e.style.setProperty("--rot",(Math.random()*720-360)+"deg");document.body.appendChild(e);setTimeout(()=>e.remove(),1500);}}
 
 function render(p){
- const occ=OCCASIONS[p.type]||OCCASIONS.custom, theme=THEMES[p.theme]||THEMES.rose, name=p.recipient||"you";
+ let occ=OCCASIONS[p.type]||OCCASIONS.custom; const theme=THEMES[p.theme]||THEMES.rose, name=p.recipient||"you"; if(p.type==="custom"&&p.customOccasion){const co=p.customOccasion;occ={...OCCASIONS.custom,headline:(p.title||("A little surprise for "+co+" 🌟")),welcome:"Hey "+name+"! ✨",text:"A little surprise made especially for you for "+co+". 💗🎀✨",sub:"Celebrating "+co+" in our own little way. 🎀",stickers:["🌟","🎀","🐼","💗","🐱","🦋","✨","🌸"]};}
  document.body.className=(p.theme||"rose")+" gift-theme occasion-"+(p.type||"custom");
  document.title=(p.title||"WishingStar")+" ✦";
  addStickers([...occ.stickers,...theme]);
