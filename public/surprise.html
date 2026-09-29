@@ -95,7 +95,7 @@ function render(p){
  $("noPhotos").style.display=memories.length?"none":"block";
  $("letterText").textContent=p.message||"";
  if(p.proposalQuestion&&p.proposalQuestion.trim()){ $("yesBtn").onclick=celebrate; $("noBtn").onclick=moveNo; } if(p.dateInvite){const db=$("dateYesBtn"),dn=$("dateNoBtn");if(db)db.onclick=async()=>{db.textContent="Yay! I’m coming! 🥰💗";db.classList.add("accepted");if(dn)dn.style.display="none";await sendRecipientResponse("date_night","yes","Yes, I’m coming! 💕");};if(dn)dn.onclick=moveDateNo;}
- if(p.dateInvite){const db=$("dateYesBtn"),dn=$("dateNoBtn");if(db)db.onclick=()=>{db.textContent="Yay! I’m coming! 🥰💗";db.classList.add("accepted");if(dn)dn.style.display="none";};if(dn)dn.onclick=moveDateNo;}
+
  $("menu").style.display="grid";const pms=$("privateMessageSend");if(pms)pms.onclick=async()=>{const ta=$("privateMessageText"),ni=$("privateMessageName"),st=$("privateMessageStatus"),msg=String(ta?.value||"").trim();if(!msg){if(st)st.textContent="Write a little message first 💗";return;}pms.disabled=true;pms.textContent="Sending…";const ok=await sendRecipientResponse("private_message",msg,"Private message",String(ni?.value||"").trim());if(ok){ta.value="";if(ni)ni.value="";pms.textContent="Sent with love 💌";if(st)st.textContent="Your private message has been sent. 💗";setTimeout(()=>{pms.textContent="Send Message 💌";pms.disabled=false},1800);}else{pms.textContent="Try again 💌";pms.disabled=false;if(st)st.textContent="Couldn’t send it right now. Please try again.";}};
  $("loadingState").style.display="none";
 }
