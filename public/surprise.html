@@ -88,11 +88,11 @@ function render(p){
  $("panels").innerHTML=panels.map(x=>'<section class="panel" id="'+x[0]+'"><button class="close" type="button" onclick="closePanels()">Back</button>'+x[3]+"</section>").join("");
  document.querySelectorAll(".tile").forEach(b=>b.addEventListener("click",()=>openPanel(b.dataset.panel)));
 
- const photos=Array.isArray(p.photos)?p.photos:[],videos=Array.isArray(p.videos)?p.videos:[];
+
  const memories=[...photos.map(x=>({src:x,type:"image"})),...videos.map(x=>({src:x,type:"video"}))];
  $("gallery").innerHTML="";
  memories.forEach((m,i)=>{const btn=document.createElement("button");btn.className="memory-thumb";btn.type="button";btn.dataset.memoryIndex=i;const media=document.createElement(m.type==="image"?"img":"video");media.src=m.src;if(m.type==="image")media.alt="Memory";else{media.muted=true;media.playsInline=true;media.preload="metadata";}const label=document.createElement("span");label.className="memory-label";label.textContent=(m.type==="image"?"📸 Memory ":"🎬 Memory ")+(i+1)+" · tap to open 💗";btn.appendChild(media);btn.appendChild(label);btn.addEventListener("click",()=>openMemory(m,i));$("gallery").appendChild(btn);});
- $("noPhotos").style.display=memories.length?"none":"block";
+
  $("letterText").textContent=p.message||"";
  if(p.proposalQuestion&&p.proposalQuestion.trim()){ $("yesBtn").onclick=celebrate; $("noBtn").onclick=moveNo; } if(p.dateInvite){const db=$("dateYesBtn"),dn=$("dateNoBtn");if(db)db.onclick=async()=>{db.textContent="Yay! I’m coming! 🥰💗";db.classList.add("accepted");if(dn)dn.style.display="none";await sendRecipientResponse("date_night","yes","Yes, I’m coming! 💕");};if(dn)dn.onclick=moveDateNo;}
 
