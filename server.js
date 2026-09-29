@@ -49,7 +49,7 @@ const clean=b=>({
   noText:String(b?.noText||"Maybe 🙈").slice(0,80),
   photos:Array.isArray(b?.photos)?b.photos.map(safeMedia).filter(Boolean).slice(0,8):[],
   customAudio:safeMedia(b?.customAudio||""),
-  videos:Array.isArray(b?.videos)?b.videos.map(safeMedia).filter(Boolean).slice(0,3):[],
+  videos:Array.isArray(b?.videos)?b.videos.map(safeMedia).filter(Boolean).slice(0,8):[],
   sections:b?.sections&&typeof b.sections==="object"
     ?Object.fromEntries(Object.entries(b.sections)
       .filter(([k,v])=>["love","like","special","adore","favorite","promises"].includes(k)&&typeof v==="string")
@@ -163,6 +163,22 @@ app.get("/api/r2/files",async(q,s)=>{
 });
 
 app.delete("/api/r2/files",async(q,s)=>s.status(405).json({error:"R2 deletion is disabled from the public API"}));
+
+app.get("/api/media-proxy",async(q,s)=>{
+  try{
+    const target=String(q.query?.url||"");
+    const base=String(process.env.R2_PUBLIC_BASE_URL||"").replace(/\/$/,"");
+    if(!base||!target.startsWith(base+"/"))return s.status(400).json({error:"Invalid media URL"});
+    const r=await fetch(target);
+    if(!r.ok)return s.status(r.status).end();
+    s.status(200);
+    s.setHeader("Content-Type",r.headers.get("content-type")||"application/octet-stream");
+    s.setHeader("Cache-Control","private,max-age=3600");
+    if(String(q.query?.download||"") === "1")s.setHeader("Content-Disposition",'attachment; filename="WishingStar-memory"');
+    const ab=await r.arrayBuffer();
+    s.send(Buffer.from(ab));
+  }catch(e){console.error("media proxy",e);s.status(500).end();}
+});
 
 app.get("/s/:id",(q,s)=>s.sendFile(path.join(__dirname,"public/surprise.html")));
 
