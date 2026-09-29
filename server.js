@@ -2,7 +2,7 @@ const express=require("express");
 const QRCode=require("qrcode");
 const path=require("path");
 const crypto=require("crypto");
-const {readPages,createPage,updatePage,deletePage,hydratePage,migrateLocalIfNeeded,listR2Files,configured,googleConfigured,r2Configured}=require("./storage");
+const {readPages,createPage,updatePage,deletePage,hydratePage,uploadMedia,migrateLocalIfNeeded,listR2Files,configured,googleConfigured,r2Configured}=require("./storage");
 
 const app=express();
 const PORT=process.env.PORT||3000;
@@ -67,6 +67,17 @@ app.get("/api/pages",async(q,s)=>{
     console.error("list pages",e);
     s.status(500).json({error:"Unable to load your WishingStars right now."});
   }
+});
+
+app.post("/api/media",async(q,s)=>{
+  try{
+    if(!r2Configured)return s.status(503).json({error:"Cloudflare R2 storage is not configured yet."});
+    const v=q.body?.data;
+    const folder=["photos","videos","audio"].includes(q.body?.folder)?q.body.folder:"other";
+    if(typeof v!=="string"||!v.startsWith("data:"))return s.status(400).json({error:"Invalid media file."});
+    const url=await uploadMedia(v,folder,crypto.randomBytes(7).toString("base64url"));
+    s.status(201).json({url});
+  }catch(e){console.error("media upload",e);s.status(500).json({error:"Could not upload media. Please try again."});}
 });
 
 app.post("/api/pages",async(q,s)=>{
