@@ -1,27 +1,221 @@
 <!doctype html>
-<html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>WishingStar — Personalised Surprise Website</title>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Create a cute personalised surprise website with letters, memories, music, proposal, date night, QR sharing and more. Free with WishingStar.">
+<title>WishingStar ✦ — Make a Surprise They'll Remember</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:DM Sans;background:#fff8fa;color:#291820}.wrap{max-width:1120px;margin:auto;padding:0 18px}.nav{height:72px;display:flex;align-items:center;justify-content:space-between}.logo{font:700 34px Caveat;color:#ef3e78}.nav a{color:#6d4652;text-decoration:none;font-weight:600;margin-left:18px}.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:45px;align-items:center;padding:45px 0 65px}.eyebrow{display:inline-block;background:#ffe7ef;color:#c62e61;padding:8px 14px;border-radius:99px;font-size:13px;font-weight:700}.hero h1{font:700 clamp(42px,6vw,68px) Playfair Display;line-height:1.04;margin:18px 0 16px}.hero h1 span{color:#ef3e78}.hero p{font-size:18px;line-height:1.7;color:#765b66;max-width:600px}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:0;border-radius:14px;padding:14px 22px;font-weight:700;cursor:pointer}.primary{background:#ff4f81;color:white;box-shadow:0 12px 28px #ff4f8130}.secondary{background:white;color:#a72c56;border:1px solid #f0d9e2}.mock{background:linear-gradient(145deg,#ffd9e6,#fff);border-radius:34px;padding:18px;box-shadow:0 25px 70px #7b30451c}.phone{background:#fff;border-radius:26px;min-height:520px;padding:26px;text-align:center;box-shadow:0 10px 30px #7b304514}.phone .heart{font-size:65px}.phone h2{font:700 32px Playfair Display}.script{font:700 34px Caveat;color:#ff4f81}.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}.tile{padding:22px 8px;border-radius:18px;background:#fff8fa;border:1px solid #f6e3ea;font-weight:600;color:#5c2637}.section{padding:65px 0}.section h2{text-align:center;font:700 40px Playfair Display;margin:0 0 12px}.lead{text-align:center;color:#765b66;max-width:650px;margin:0 auto 35px;line-height:1.7}.features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.feature{background:white;border-radius:22px;padding:24px;border:1px solid #f1dfe5}.feature .ico{font-size:32px}.feature h3{margin:14px 0 7px}.feature p{color:#806771;line-height:1.55;font-size:14px}.product{background:#24131b;color:white;border-radius:30px;padding:34px;display:grid;grid-template-columns:1fr auto;gap:25px;align-items:center}.product h2{text-align:left;color:white;margin:0 0 8px}.price{font-size:42px;font-weight:700}.price small{font-size:16px;text-decoration:line-through;opacity:.55}.check{display:grid;gap:8px;color:#f5dce5;margin-top:15px}.faq{max-width:800px;margin:auto}.faq details{background:white;border:1px solid #f0dce3;border-radius:15px;padding:17px;margin:10px 0}.faq summary{font-weight:700;cursor:pointer}.footer{padding:35px 0 55px;text-align:center;color:#8a7079}.sticky{display:none}
-@media(max-width:800px){.wrap{padding:0 13px}.nav{height:60px}.logo{font-size:29px}.nav a{margin-left:9px;font-size:12px}.hero{grid-template-columns:1fr;gap:20px;padding:18px 0 34px}.hero h1{font-size:38px;line-height:1.08;margin:14px 0}.hero p{font-size:14px;line-height:1.55}.cta{margin-top:18px}.btn{padding:12px 17px}.mock{max-width:360px;margin:auto;padding:10px;border-radius:24px}.phone{min-height:390px;padding:20px;border-radius:20px}.phone .heart{font-size:48px}.phone h2{font-size:25px}.script{font-size:28px}.tiles{margin-top:18px;gap:8px}.tile{padding:16px 6px;font-size:13px}.section{padding:32px 0}.section h2{font-size:29px;line-height:1.15}.lead{font-size:14px;line-height:1.55;margin-bottom:22px}.features{grid-template-columns:1fr 1fr;gap:10px}.feature{padding:16px;border-radius:16px}.feature .ico{font-size:25px}.feature h3{font-size:15px;margin:9px 0 5px}.feature p{font-size:12px;line-height:1.45}.product{grid-template-columns:1fr;padding:22px;border-radius:22px}.price{font-size:34px}.sticky{display:flex;position:fixed;bottom:10px;left:10px;right:10px;z-index:20}.sticky a{width:100%}}
-@media(max-width:480px){.features{grid-template-columns:1fr}.hero h1{font-size:35px}.phone{min-height:370px}.hero{padding-bottom:26px}.section h2{font-size:27px}}
-</style></head>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"DM Sans",sans-serif;color:#291820;background:#fff8fb;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+.wrap{width:min(1160px,calc(100% - 28px));margin:auto}
+.nav{height:72px;display:flex;align-items:center;justify-content:space-between}
+.logo{font:700 35px Caveat;color:#f0447d;display:inline-flex;align-items:center;gap:5px}
+.logo span{font-family:serif;font-size:24px}
+.navlinks{display:flex;align-items:center;gap:18px}
+.navlinks a{font-size:13px;font-weight:700;color:#76515d}
+.navcta{padding:10px 16px;border-radius:999px;background:#ff4f81;color:#fff!important;box-shadow:0 8px 22px #ff4f8130}
+.hero{position:relative;padding:48px 0 80px}
+.hero:before,.hero:after{content:"";position:absolute;z-index:-1;border-radius:50%;filter:blur(2px);pointer-events:none}
+.hero:before{width:330px;height:330px;background:#ffd9e8;left:-170px;top:0}
+.hero:after{width:270px;height:270px;background:#eee2ff;right:-130px;bottom:30px}
+.heroGrid{display:grid;grid-template-columns:1.02fr .98fr;gap:55px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;background:#ffe7ef;color:#c52f61;border:1px solid #ffd0df;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:800}
+h1{font:800 clamp(48px,6vw,76px)/1.01 "Playfair Display";letter-spacing:-2px;margin:18px 0}
+h1 span{color:#f0447d}
+.heroText{font-size:17px;line-height:1.7;color:#765d68;max-width:650px}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin:25px 0 13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:15px;padding:14px 21px;font-weight:800;border:1px solid transparent}
+.primary{background:#ff4f81;color:#fff;box-shadow:0 12px 30px #ff4f8135}
+.secondary{background:#fff;border-color:#efd6e0;color:#9c3157}
+.freeNote{font-size:12px;color:#95747e}
+.heroCard{position:relative;background:linear-gradient(145deg,#ffe0eb,#fff 54%,#eee3ff);padding:14px;border-radius:35px;box-shadow:0 28px 75px #6f284520;transform:rotate(1deg)}
+.phone{background:#fff;border-radius:27px;padding:22px;min-height:555px;text-align:center;border:1px solid #f1e0e6;overflow:hidden;position:relative}
+.phoneTop{display:flex;justify-content:space-between;font-size:10px;color:#a57b89;font-weight:800}
+.sparkles{font-size:26px;letter-spacing:7px;margin:18px 0 3px}
+.phone h2{font:800 31px/1.1 "Playfair Display";margin:8px 0;color:#3a202a}
+.script{font:700 31px Caveat;color:#f0447d}
+.phone p{color:#806570;font-size:12px;line-height:1.55}
+.giftGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+.gift{padding:15px 8px;background:#fff8fb;border:1px solid #f3dfe7;border-radius:16px;color:#5f3443;font-size:12px;font-weight:800}
+.gift b{display:block;font-size:22px;margin-bottom:5px}
+.signature{margin-top:17px;font:700 22px Caveat;color:#a62f5c}
+.float{position:absolute;font-size:25px;animation:float 4s ease-in-out infinite}
+.f1{right:-13px;top:55px}.f2{left:-18px;bottom:85px;animation-delay:1s}.f3{right:12px;bottom:22px;animation-delay:2s}
+@keyframes float{50%{transform:translateY(-11px) rotate(7deg)}}
+.section{padding:78px 0}
+.soft{background:#fff}
+.center{text-align:center}
+.kicker{font-size:12px;font-weight:800;color:#d13a6a;letter-spacing:.08em;text-transform:uppercase}
+.section h2{font:800 clamp(32px,4vw,46px)/1.1 "Playfair Display";margin:8px 0 12px;letter-spacing:-1px}
+.lead{max-width:680px;margin:0 auto 36px;color:#78616b;line-height:1.7;font-size:15px}
+.occasions{display:flex;justify-content:center;flex-wrap:wrap;gap:9px}
+.pill{background:#fff7fa;border:1px solid #efd9e2;border-radius:999px;padding:11px 15px;font-size:13px;font-weight:800;color:#673647}
+.featureGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.feature{background:#fff;border:1px solid #f0dfe6;border-radius:23px;padding:23px;box-shadow:0 12px 32px #702a3d0b}
+.ico{font-size:30px}
+.feature h3{margin:13px 0 7px;font-size:17px}
+.feature p{margin:0;color:#7c6670;font-size:13px;line-height:1.6}
+.feature .tag{display:inline-block;margin-top:14px;font-size:10px;font-weight:800;color:#b12f5b;background:#fff0f5;padding:6px 9px;border-radius:999px}
+.builder{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.steps{display:grid;gap:11px}
+.step{display:grid;grid-template-columns:42px 1fr;gap:13px;align-items:start;padding:18px;background:#fff;border:1px solid #f0dfe6;border-radius:19px}
+.num{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:#ffe5ee;color:#c42e60;font-weight:900}
+.step h3{margin:2px 0 5px;font-size:16px}.step p{margin:0;color:#7c6670;font-size:13px;line-height:1.5}
+.showcase{background:linear-gradient(145deg,#2b1721,#5a2740);color:#fff;border-radius:29px;padding:29px;position:relative;overflow:hidden}
+.showcase:after{content:"✦  ♡  ✦";position:absolute;right:-8px;bottom:8px;font-size:80px;opacity:.08}
+.showcase h3{font:700 34px Caveat;margin:0 0 8px;color:#ffd2e1}
+.showcase p{color:#f0dbe3;line-height:1.65;font-size:13px}
+.miniCards{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:20px}
+.mini{padding:14px;border-radius:15px;background:#ffffff12;border:1px solid #ffffff20;font-size:12px}
+.mini b{display:block;margin-bottom:4px}
+.more{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+.moreItem{padding:15px 7px;text-align:center;border-radius:17px;background:#fff;border:1px solid #f0dfe6;font-size:11px;font-weight:800;color:#673647}
+.moreItem b{display:block;font-size:24px;margin-bottom:7px}
+.highlight{background:linear-gradient(135deg,#fff0f5,#f2ebff);border-top:1px solid #f1dce5;border-bottom:1px solid #f1dce5}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:#fff;border:1px solid #eedde5;border-radius:25px;padding:26px}
+.panel h3{font:700 30px Caveat;color:#e33e75;margin:0 0 8px}.panel p{color:#77616b;line-height:1.6;font-size:13px}
+.bubbles{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.bubble{padding:9px 12px;border-radius:999px;background:#fff5f8;border:1px solid #f0d8e2;font-size:11px;font-weight:800}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.time{background:#fff;border:1px solid #f0dfe6;border-radius:20px;padding:20px;text-align:center}
+.time .big{font-size:30px}.time h3{font-size:14px;margin:9px 0 5px}.time p{font-size:12px;color:#806a73;line-height:1.5;margin:0}
+.ctaBox{background:linear-gradient(135deg,#ff4f81,#d9366c);color:#fff;border-radius:31px;padding:42px 30px;text-align:center;box-shadow:0 24px 60px #c72e5a35}
+.ctaBox h2{color:#fff;margin-top:0}.ctaBox p{color:#ffe8ef;max-width:620px;margin:0 auto 23px;line-height:1.6;font-size:14px}.ctaBox .btn{background:#fff;color:#bd2e5c}
+.faq{max-width:820px;margin:auto}.faq details{background:#fff;border:1px solid #efdee5;border-radius:15px;padding:17px;margin:9px 0}.faq summary{font-weight:800;cursor:pointer}.faq p{color:#7b6670;font-size:13px;line-height:1.6}
+footer{padding:38px 0 90px;text-align:center;color:#8b717b}.footerLogo{font:700 31px Caveat;color:#f0447d}.sticky{display:none}
+@media(max-width:850px){.heroGrid,.builder,.two{grid-template-columns:1fr}.hero{padding:27px 0 45px}.heroGrid{gap:27px}h1{font-size:48px}.heroText{font-size:15px}.heroCard{max-width:430px;margin:auto}.featureGrid{grid-template-columns:1fr 1fr}.more{grid-template-columns:repeat(3,1fr)}.timeline{grid-template-columns:1fr 1fr}.navlinks a:not(.navcta){display:none}.section{padding:58px 0}}
+@media(max-width:520px){.wrap{width:min(100% - 20px,1160px)}.nav{height:62px}.logo{font-size:31px}.hero{padding-top:20px}h1{font-size:40px;letter-spacing:-1.2px}.heroText{font-size:14px}.actions{display:grid;grid-template-columns:1fr}.btn{width:100%}.phone{min-height:500px;padding:19px}.phone h2{font-size:27px}.script{font-size:29px}.section{padding:45px 0}.section h2{font-size:31px}.lead{font-size:13px}.featureGrid{grid-template-columns:1fr}.feature{padding:19px}.more{grid-template-columns:repeat(2,1fr)}.timeline{grid-template-columns:1fr 1fr}.showcase,.panel,.ctaBox{padding:22px}.ctaBox h2{font-size:31px}}
+</style>
+</head>
 <body>
-<header><div class="wrap nav"><div class="logo">WishingStar ✦</div><div><a href="#how">How it works</a><a href="/dashboard.html">My Dashboard</a></div></div></header>
+<header><div class="wrap nav">
+<a class="logo" href="/">WishingStar <span>✦</span></a>
+<nav class="navlinks"><a href="#features">Features</a><a href="#how">How it works</a><a href="/dashboard.html">My Dashboard</a><a class="navcta" href="/create.html">Create free ✨</a></nav>
+</div></header>
+
 <main>
-<section class="wrap hero">
-<div><span class="eyebrow">💗 A digital gift made from your heart</span><h1>Turn your memories into a <span>beautiful surprise.</span></h1><p>Create a personalised mini-website for your boyfriend, girlfriend, husband, wife, best friend or anyone special. Add your message, photos, music and a date — then get a private link and QR code to share.</p><div class="cta"><a class="btn primary" href="/create.html">Create my surprise — Free</a><a class="btn secondary" href="#how">See how it works</a></div><p style="font-size:13px;margin-top:14px">Free to create • Instant share link + QR</p></div>
-<div class="mock"><div class="phone"><div class="heart">💗</div><h2>Happy Birthday,<br>my love</h2><div class="script">Khushi ♡</div><p style="color:#765b66;line-height:1.7">Explore the little things I love about us.</p><div class="tiles"><div class="tile">🖼️<br>Our Memories</div><div class="tile">✉️<br>My Letter</div><div class="tile">♡<br>Why I Love You</div><div class="tile">♡<br>Date Night?</div></div></div></div>
-</section>
-<section class="section" id="how"><div class="wrap"><h2>Everything they need to feel special 💕</h2><p class="lead">A simple digital gift experience: you personalise it, your loved one opens one beautiful page, and your memories are all in one place.</p><div class="features">
-<div class="feature"><div class="ico">💌</div><h3>Personal message</h3><p>Write your own letter instead of sending another ordinary text.</p></div>
-<div class="feature"><div class="ico">📸</div><h3>Memories</h3><p>Add up to 8 photos to create your own little memory wall.</p></div>
-<div class="feature"><div class="ico">🎵</div><h3>Your music</h3><p>Add a YouTube, Spotify or direct MP3 source as an optional soundtrack.</p></div>
-<div class="feature"><div class="ico">🔗</div><h3>Link + QR</h3><p>Get a private share link and a cute QR card after your order.</p></div>
+<section class="hero"><div class="wrap heroGrid">
+<div>
+<span class="eyebrow">💗 Your story deserves more than a text message</span>
+<h1>Make a surprise they'll <span>never forget.</span></h1>
+<p class="heroText">Build a cute personalised mini-website for someone special. Add your letter, memories, music, little reasons you love them, a proposal or date-night invite — then share it with one private link or QR.</p>
+<div class="actions"><a class="btn primary" href="/create.html">Create my WishingStar ✨</a><a class="btn secondary" href="#features">See what's inside ↓</a></div>
+<div class="freeNote">✨ Free to create &nbsp;•&nbsp; No payment required &nbsp;•&nbsp; Works on phone & desktop</div>
+</div>
+<div class="heroCard">
+<span class="float f1">💗</span><span class="float f2">🌸</span><span class="float f3">✨</span>
+<div class="phone">
+<div class="phoneTop"><span>WishingStar ✦</span><span>Made with love</span></div>
+<div class="sparkles">🎀 💕 🧸 💕 🎀</div>
+<div class="script">A little surprise for you ♡</div>
+<h2>Happy Birthday,<br>my favourite person</h2>
+<div class="script">Khushi ♡</div>
+<p>A tiny corner of the internet made just for you. Open it and explore the little pieces of our story.</p>
+<div class="giftGrid">
+<div class="gift"><b>🖼️</b>Our Memories</div>
+<div class="gift"><b>💌</b>My Letter</div>
+<div class="gift"><b>💗</b>Why I Love You</div>
+<div class="gift"><b>🌙</b>Date Night</div>
+<div class="gift"><b>💍</b>The Big Question</div>
+<div class="gift"><b>🎵</b>Our Music</div>
+</div>
+<div class="signature">With love, always 💗</div>
+</div></div>
+</div></section>
+
+<section class="section soft" id="features"><div class="wrap">
+<div class="center"><div class="kicker">Made for every kind of special moment</div><h2>Not just a page. A whole little experience. 💕</h2><p class="lead">Pick what fits your story. Keep it simple or add all the little details that make the surprise feel like yours.</p></div>
+<div class="occasions">
+<span class="pill">🎂 Birthday</span><span class="pill">💍 Proposal</span><span class="pill">❤️ Valentine</span><span class="pill">🥂 Anniversary</span><span class="pill">✨ Custom occasion</span>
+</div>
+</div></section>
+
+<section class="section"><div class="wrap">
+<div class="featureGrid">
+<div class="feature"><div class="ico">💌</div><h3>Your own letter</h3><p>Write a personal message from your heart. It becomes a dedicated gift page instead of getting lost in a chat.</p><span class="tag">Required</span></div>
+<div class="feature"><div class="ico">📸</div><h3>Our Memories</h3><p>Add photos and videos together. They open in a beautiful viewer with natural proportions, Love it and Save actions.</p><span class="tag">Up to 8 media</span></div>
+<div class="feature"><div class="ico">🎵</div><h3>Make it sound like you</h3><p>Add a music link or upload one custom audio track. Your custom audio can be replaced or removed anytime.</p><span class="tag">Optional</span></div>
+<div class="feature"><div class="ico">💍</div><h3>The Big Question</h3><p>Add your own proposal question with Yes and Maybe response buttons — perfect for a proposal-style surprise.</p><span class="tag">Optional</span></div>
+<div class="feature"><div class="ico">🌙</div><h3>Date Night invitation</h3><p>Create a separate invite with date, time, place and your message, with a simple RSVP-style response.</p><span class="tag">Optional</span></div>
+<div class="feature"><div class="ico">💌</div><h3>Private message back</h3><p>They can send a little message back from the surprise page. Responses are saved for the creator to see.</p><span class="tag">Built in</span></div>
+</div>
+</div></section>
+
+<section class="section highlight" id="how"><div class="wrap builder">
+<div>
+<div class="kicker">Build it in a few minutes</div><h2>From your idea to their screen. ✨</h2><p class="lead" style="margin-left:0;text-align:left">Choose an occasion, make it yours, preview everything, and share one link or a cute QR card.</p>
+<div class="steps">
+<div class="step"><div class="num">1</div><div><h3>Choose the moment</h3><p>Birthday, Proposal, Valentine, Anniversary or your own Custom occasion.</p></div></div>
+<div class="step"><div class="num">2</div><div><h3>Personalise every detail</h3><p>Add recipient + sender name, title, letter, memories, music and optional sections.</p></div></div>
+<div class="step"><div class="num">3</div><div><h3>Pick a look</h3><p>Choose Rose, Lavender, Midnight, Sunset or Classic. The preview updates while you build.</p></div></div>
+<div class="step"><div class="num">4</div><div><h3>Share the surprise</h3><p>Get your private surprise link, QR code and shareable QR card — ready to send.</p></div></div>
+</div>
+</div>
+<div class="showcase">
+<h3>Little details make it yours ♡</h3>
+<p>Don't stop at a basic birthday page. Add only the pieces that belong to your story.</p>
+<div class="miniCards">
+<div class="mini"><b>💗 Why I Love You</b>Little reasons that make them special.</div>
+<div class="mini"><b>🥰 Why I Like You</b>The things that first pulled you closer.</div>
+<div class="mini"><b>🌸 Why You're Special</b>Tell them what makes them one of a kind.</div>
+<div class="mini"><b>🫶 Things I Adore</b>All those tiny details you notice.</div>
+<div class="mini"><b>🎀 My Favorite Things</b>Favorite habits, moments and memories.</div>
+<div class="mini"><b>🤞 Our Little Promises</b>Your tiny promises, kept point by point.</div>
+</div>
+</div>
+</div></section>
+
+<section class="section"><div class="wrap">
+<div class="center"><div class="kicker">Choose your vibe</div><h2>One story, five different moods. 🎀</h2><p class="lead">The theme changes the feel of the surprise, not just the colour.</p></div>
+<div class="more">
+<div class="moreItem"><b>🎀</b>Rose<br><small>Cute Pink</small></div>
+<div class="moreItem"><b>🦋</b>Lavender<br><small>Dreamy</small></div>
+<div class="moreItem"><b>🌙</b>Midnight<br><small>Cute Night</small></div>
+<div class="moreItem"><b>🌸</b>Sunset<br><small>Peachy</small></div>
+<div class="moreItem"><b>🤍</b>Classic<br><small>Soft & Elegant</small></div>
+<div class="moreItem"><b>✨</b>Live Preview<br><small>See it as you build</small></div>
+</div>
+</div></section>
+
+<section class="section highlight"><div class="wrap two">
+<div class="panel"><h3>📸 Memories, but prettier</h3><p>Your photos and videos stay together in one memory section. The recipient first sees a neat gallery, then opens each memory in a dedicated viewer with its natural aspect ratio.</p><div class="bubbles"><span class="bubble">💗 Love it</span><span class="bubble">Save</span><span class="bubble">📱 Mobile friendly</span><span class="bubble">🖼️ Framed save</span></div></div>
+<div class="panel"><h3>🎀 A real surprise flow</h3><p>They don't land on a boring form. They get a welcome screen, an “Open your gift” moment, animated transitions and separate gift pages to explore.</p><div class="bubbles"><span class="bubble">✨ Welcome</span><span class="bubble">🎁 Open your gift</span><span class="bubble">🧸 Cute animations</span><span class="bubble">💌 Separate pages</span></div></div>
+</div></section>
+
+<section class="section"><div class="wrap">
+<div class="center"><div class="kicker">After you create it</div><h2>One link. One QR. One unforgettable moment. 💗</h2><p class="lead">Your surprise is made to be shared easily — whether you send the link in chat or hand them a cute QR card.</p></div>
+<div class="timeline">
+<div class="time"><div class="big">🔗</div><h3>Private link</h3><p>Share the personalised surprise directly.</p></div>
+<div class="time"><div class="big">▦</div><h3>QR code</h3><p>Let them scan and open the surprise.</p></div>
+<div class="time"><div class="big">🎀</div><h3>QR card</h3><p>Save or share a cute full QR card image.</p></div>
+<div class="time"><div class="big">💌</div><h3>Responses</h3><p>See proposal, date-night and private replies.</p></div>
+</div>
+</div></section>
+
+<section class="section"><div class="wrap"><div class="ctaBox">
+<h2>Ready to make their little moment? 💕</h2>
+<p>No payment page. No app download. Just choose your occasion, add your words and memories, and create a surprise they can open on their phone.</p>
+<a class="btn" href="/create.html">Create your WishingStar — Free ✨</a>
 </div></div></section>
-<section class="section"><div class="wrap"><h2>How it works</h2><p class="lead">Three simple steps from idea to surprise.</p><div class="features"><div class="feature"><div class="ico">1️⃣</div><h3>Personalise</h3><p>Choose an occasion and theme, then add the details you want.</p></div><div class="feature"><div class="ico">2️⃣</div><h3>Create</h3><p>Fill in your message, memories, music and special details.</p></div><div class="feature"><div class="ico">3️⃣</div><h3>Share</h3><p>Your personalised page, link and QR are ready to send instantly.</p></div><div class="feature"><div class="ico">💖</div><h3>Make their day</h3><p>They open the page and explore the little things you made for them.</p></div></div></div></section>
-<section class="section"><div class="wrap faq"><h2>Questions</h2><details><summary>Is this a physical gift?</summary><p>No. It is a digital personalised website that you can share by link or QR.</p></details><details><summary>Can I make it without photos?</summary><p>Yes. Photos and music are optional.</p></details><details><summary>Can I choose birthday, proposal or anniversary?</summary><p>Yes. The creator supports multiple occasions and custom surprises.</p></details><details><summary>Do I need to install an app?</summary><p>No. The surprise opens in a normal mobile or desktop browser.</p></details></div></section>
+
+<section class="section" id="faq"><div class="wrap faq">
+<div class="center"><div class="kicker">Questions</div><h2>Before you create 💗</h2></div>
+<details><summary>Is WishingStar free?</summary><p>Yes. The current creator flow is free and does not ask for payment or contact details.</p></details>
+<details><summary>Do I have to add photos or music?</summary><p>No. Photos/videos and music are optional. You can make a beautiful surprise with just the required personal details and letter.</p></details>
+<details><summary>How many memories can I add?</summary><p>You can add up to 8 photos/videos in total. Photos are limited to 5 MB each and videos to 15 MB each.</p></details>
+<details><summary>Can I add my own music file?</summary><p>Yes. Custom audio is optional, limited to 5 MB, and one file can be used at a time.</p></details>
+<details><summary>Can I make something other than a birthday surprise?</summary><p>Yes. Choose Proposal, Valentine, Anniversary or Custom, and add optional sections such as Why I Love You, Our Little Promises or Date Night.</p></details>
+<details><summary>Do they need an app?</summary><p>No. The surprise opens in a normal mobile or desktop browser.</p></details>
+</div></section>
 </main>
-<footer class="footer"><div class="wrap"><div class="logo">WishingStar ✦</div><p>Made for moments worth remembering.</p></div></footer>
-<div class="sticky"><a class="btn primary" href="/create.html">Create your surprise — Free</a></div>
-</body></html>
+
+<footer><div class="wrap"><div class="footerLogo">WishingStar ✦</div><p>Made for moments worth remembering. 💗</p></div></footer>
+<div class="sticky"><a class="btn primary" href="/create.html">Create your surprise — Free ✨</a></div>
+<style>.sticky{display:none}@media(max-width:520px){.sticky{display:block;position:fixed;left:10px;right:10px;bottom:10px;z-index:30}.sticky .btn{box-shadow:0 12px 28px #7b304530}}</style>
+</body>
+</html>
