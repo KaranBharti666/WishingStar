@@ -51,10 +51,57 @@ button,input,textarea{font:inherit}button{touch-action:manipulation}.wrap{width:
 @keyframes yesResult{0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}70%{opacity:1;transform:translate(-50%,-58%) scale(1)}100%{opacity:0;transform:translate(-50%,-82%) scale(.92)}}
 @keyframes yesConfetti{0%{opacity:1;transform:translate(-50%,-50%) scale(.5) rotate(0)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--rot)) scale(1.2)}}
 @media(max-width:600px){body{padding:8px}.hero{padding:17px 5px 20px}.logo{font-size:30px}.heart{font-size:43px}.eyebrow{font-size:15px;padding:8px 13px}.sub{font-size:15.5px}.menu{gap:10px}.tile{min-height:132px;padding:20px 8px;border-radius:21px}.tile h2{font-size:17px}.icon{font-size:34px}.gift-sheet{min-height:calc(100dvh - 16px);padding:27px 11px 30px;border-radius:25px}.gift-sheet:before{inset:8px;border-radius:19px}.gift-title{padding:18px 34px 21px}.gift-title h2{font-size:34px}.gift-title .tiny-note{font-size:16px}.gift-corner{font-size:27px}.gallery{gap:10px}.memory-thumb{padding:7px;border-radius:18px}.memory-thumb:before{inset:5px;border-radius:14px}.memory-thumb img,.memory-thumb video{border-radius:11px}.memory-thumb .memory-label{font-size:14px}.memory-viewer{padding:7px}.memory-viewer-card{width:100%;max-height:calc(100dvh - 14px);padding:10px;border-radius:23px}.memory-viewer-media{max-height:calc(100dvh - 175px);padding:13px}.memory-viewer-media img,.memory-viewer-media video{max-height:calc(100dvh - 235px);border-width:5px}.memory-caption{font-size:21px}.memory-viewer-actions button{padding:10px 17px}.private-message-wrap{margin:24px auto 10px}.private-message-capsule{font-size:14px;padding:12px 18px}.private-message-panel,.private-message{padding:19px 14px}.private-message .pm-row,.private-message-panel .pm-row{flex-direction:column}.private-message input,.private-message button,.private-message-panel input,.private-message-panel button{width:100%}.welcome{padding:10px}.welcome-card{width:100%;max-height:calc(100dvh - 20px);padding:29px 15px;border-radius:27px}.welcome-stickers{font-size:23px;letter-spacing:3px}.welcome-card h1{font-size:clamp(31px,9vw,44px);line-height:1.12}.welcome-card p{font-size:15.5px;line-height:1.55}.open-gift{width:min(100%,350px);font-size:17px}}
+
+/* WishingStar touch feedback: remove Android/Chrome's default tap square and use our own */
+html,body,*{
+  -webkit-tap-highlight-color:transparent;
+}
+button,a,[role="button"],input,textarea,select{
+  -webkit-tap-highlight-color:transparent;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible),
+select:focus:not(:focus-visible){
+  outline:none;
+}
+.wishing-click{
+  position:fixed;z-index:99999;width:20px;height:20px;margin:-10px 0 0 -10px;
+  border-radius:50%;pointer-events:none;border:2px solid rgba(255,79,129,.72);
+  background:rgba(255,159,190,.18);box-shadow:0 0 0 0 rgba(255,79,129,.25);
+  transform:scale(.35);animation:wishingClick .48s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes wishingClick{
+  0%{opacity:.95;transform:scale(.35)}
+  55%{opacity:.65}
+  100%{opacity:0;transform:scale(2.35);box-shadow:0 0 0 10px rgba(255,79,129,0)}
+}
+
+/* Prevent the old static welcome/gift DOM from ever flashing before the API data is ready. */
+.boot-screen{
+  position:fixed;inset:0;z-index:500;display:grid;place-items:center;
+  padding:18px;background:var(--bg);text-align:center;
+}
+.boot-card{
+  width:min(88vw,420px);padding:30px 24px;border-radius:28px;
+  background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 28px 80px rgba(126,37,72,.14);backdrop-filter:blur(18px);
+}
+.boot-logo{font:700 38px Caveat;color:#e83f75}
+.boot-logo span{font-family:serif;font-size:25px}
+.boot-spark{font-size:26px;margin-top:8px;animation:bootFloat 1.1s ease-in-out infinite}
+.boot-card p{margin:8px 0 0;color:#765964;font-size:14px}
+@keyframes bootFloat{50%{transform:translateY(-5px) scale(1.06)}}
+.welcome.preload{visibility:hidden;opacity:0;pointer-events:none}
+.welcome.preload.ready{visibility:visible;opacity:1;pointer-events:auto}
+.gift-page{visibility:hidden}
+.gift-page.ready{visibility:visible}
 </style>
 
 </head>
 <body>
+<div class="boot-screen" id="bootScreen" aria-live="polite"><div class="boot-card"><div class="boot-logo">WishingStar <span>✦</span></div><div class="boot-spark">✨</div><p>Preparing your little surprise…</p></div></div>
 <section class="welcome preload" id="welcome"><div class="welcome-card"><div class="welcome-stickers">🎀 💕 🐼 ✨ 🐱 💗</div><div style="font:600 30px Caveat;color:#d83f6c">WishingStar ✦</div><h1 id="welcomeTitle">A little surprise for you 💗</h1><p id="welcomeText">Someone who loves you made something special just for you. Take a breath, smile… and open your little gift. 🎁</p><button class="open-gift" id="openGift" type="button" onclick="openGift();return false">Open Your Gift 🎁✨</button></div></section><div class="page-transition" id="pageTransition"><div class="transition-heart">💗</div><span class="transition-spark" style="--tx:-110px;--ty:-70px">✨</span><span class="transition-spark" style="--tx:110px;--ty:-55px">💕</span><span class="transition-spark" style="--tx:-90px;--ty:75px">🎀</span><span class="transition-spark" style="--tx:95px;--ty:65px">🌸</span></div><div class="sticker-layer" id="stickerLayer"><div class="character-sticker teddy" aria-hidden="true">🧸<span class="spark s1">✨</span><span class="spark s2">🌸</span></div><div class="character-sticker panda" aria-hidden="true">🐼<span class="spark s1">✨</span><span class="spark s2">💕</span></div></div><main class="wrap gift-page" id="giftPage">
 <section class="hero">
 <div class="logo">WishingStar ✦</div>
@@ -103,7 +150,7 @@ function render(p){
  addStickers([...occ.stickers,...theme]);
  $("welcomeTitle").textContent=occ.welcome.replaceAll("{name}",name);
  $("welcomeText").textContent=occ.text.replaceAll("{name}",name);
- $("welcome").querySelector(".welcome-stickers").textContent=[...theme,...occ.stickers].slice(0,8).join(" "); $("welcome").classList.add("ready");
+ $("welcome").querySelector(".welcome-stickers").textContent=[...theme,...occ.stickers].slice(0,8).join(" "); $("giftPage").classList.add("ready"); $("welcome").classList.add("ready"); const boot=$("bootScreen"); if(boot)boot.remove();
  $("eyebrow").textContent=(occ.headline||"").replace("{name}",name);
  document.querySelector(".sub").textContent=occ.sub; const sender=String(p.sender||"").trim(); $("senderByline").textContent=sender?"Made with love by "+sender+" 💗":""; $("senderByline").style.display=sender?"inline-block":"none";
 
@@ -147,6 +194,7 @@ async function load(){
  }catch(e){
   console.error("WishingStar load failed",e);
   $("loadingState").style.display="none";
+  $("giftPage").classList.add("ready"); const boot=$("bootScreen"); if(boot)boot.remove();
   $("error").style.display="block";
   $("error").innerHTML="<b>This surprise could not be loaded.</b><br>"+esc(e.name==="AbortError"?"The server took too long to respond. Please refresh the link.":"Please refresh the link and try again.");
  }
@@ -178,13 +226,21 @@ async function saveMemory(memory,index){
 }
 function openMemory(memory,index){
  const v=$("memoryViewer"),box=$("memoryViewerMedia"),cap=$("memoryCaption"),save=$("memorySave"),love=$("memoryLove");
- if(!v||!memory)return;
- if(memoryViewerOpen)return;memoryViewerOpen=true;memoryHistoryActive=true;history.pushState({wishingstarMemory:true},"",location.pathname+location.search+"#memory");v.classList.add("show");document.body.style.overflow="hidden";
- cap.textContent=(memory.type==="image"?"📸 Memory ":"🎬 Memory ")+(index+1)+" ♡";
+ if(!v||!memory||!box)return;
+ if(memoryViewerOpen)return;
+ // Keep the viewer as a direct child of <body> so fixed positioning is truly viewport-centered,
+ // even when the gallery/panel has its own animation or scrolling context.
+ if(v.parentElement!==document.body)document.body.appendChild(v);
+ memoryViewerOpen=true;memoryHistoryActive=true;
+ history.pushState({wishingstarMemory:true},"",location.pathname+location.search+"#memory");
+ cap.textContent=(memory.type==="image"?"📸 Memory ":"🎬 Memory ")+(index+1);
  box.innerHTML="";
- const media=document.createElement(memory.type==="image"?"img":"video");media.src=memory.src;
- if(memory.type==="image")media.alt="Memory";else{media.controls=true;media.playsInline=true;media.preload="metadata";}
+ const media=document.createElement(memory.type==="image"?"img":"video");
+ media.id="memoryMainMedia";media.src=memory.src;
+ if(memory.type==="image"){media.alt="Memory";}
+ else{media.controls=true;media.playsInline=true;media.preload="metadata";}
  box.appendChild(media);
+ v.classList.add("show");document.body.style.overflow="hidden";
  love.onclick=async()=>{love.textContent="💗 Loved!";await sendRecipientResponse("memory_love","loved","Love it");setTimeout(()=>love.textContent="💗 Love it",900);};
  save.onclick=()=>saveMemory(memory,index);
 }
@@ -194,6 +250,16 @@ async function celebrate(){const p=$("proposal");const b=$("yesBtn");if(b){b.cla
 async function sendRecipientResponse(type,value,label="",name=""){try{const r=await fetch("/api/pages/"+encodeURIComponent(id)+"/responses",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type,value,label,name})});return r.ok;}catch(e){console.error(e);return false;}}
 function openGift(){const w=$("welcome");const b=$("openGift");if(b){b.classList.add("pulse");setTimeout(()=>b.classList.remove("pulse"),600);}burst();setTimeout(()=>{if(w){w.style.setProperty("display","none","important");w.remove();}},180);}
 load();
+
+/* Custom tap feedback replaces the browser's blue tap highlight. */
+document.addEventListener("click",function(e){
+  if(e.defaultPrevented)return;
+  const x=e.clientX,y=e.clientY;
+  if(!Number.isFinite(x)||!Number.isFinite(y))return;
+  const r=document.createElement("span");
+  r.className="wishing-click";r.style.left=x+"px";r.style.top=y+"px";
+  document.body.appendChild(r);setTimeout(()=>r.remove(),520);
+},{passive:true});
 </script>
 </body>
 </html>
