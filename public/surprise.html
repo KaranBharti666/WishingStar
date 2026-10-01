@@ -21,6 +21,28 @@
 .open-gift.pulse{animation:openPulse .55s ease}@keyframes openPulse{50%{transform:scale(1.1) rotate(-2deg);box-shadow:0 0 0 14px #ff7ca733,0 18px 45px #ff4f8160}}
 .private-message{margin:34px auto 10px;max-width:680px;padding:26px;border-radius:26px;background:linear-gradient(145deg,#fff,#fff0f6);border:1px solid #f1cad8;box-shadow:0 14px 40px #7b304515;text-align:center}.private-message h3{font:700 28px Playfair Display;color:#7b2343;margin:0 0 7px}.private-message p{color:#8b6874;margin:0 0 16px;line-height:1.55}.private-message textarea{width:100%;min-height:130px;resize:vertical;border:1px solid #efc5d5;border-radius:18px;padding:14px;font:16px DM Sans;outline:none;background:#fffafd}.private-message .pm-row{display:flex;gap:9px;margin-top:10px}.private-message input{flex:1;border:1px solid #efc5d5;border-radius:999px;padding:12px 15px;font:15px DM Sans}.private-message button{border:0;border-radius:999px;padding:12px 20px;background:#ff4f81;color:#fff;font-weight:800;cursor:pointer}.private-message small{display:block;color:#a17b88;margin-top:10px}.midnight .private-message{background:#2b2234;border-color:#ffffff18}.midnight .private-message h3{color:#ffd6e8}.midnight .private-message p,.midnight .private-message small{color:#ddd}.midnight .private-message textarea,.midnight .private-message input{background:#211a29;color:#fff;border-color:#ffffff22}.invite-card{margin-top:16px;padding:26px;border-radius:24px;background:linear-gradient(145deg,#fff,#ffeaf2);text-align:center;border:1px solid #ffd1df;box-shadow:0 12px 35px #7b304515}.invite-date{font:700 34px Caveat;color:#e43d72}.invite-meta{font-size:16px;color:#765964;line-height:1.8}
 .midnight .invite-card{background:#241b31;border-color:#ffffff18}.midnight .invite-meta{color:#ddd}.midnight .tile{background:#241b31ee}
+
+/* Modern memories */
+.memory-sheet{background:radial-gradient(circle at 8% 10%,#ffd8e8 0 10%,transparent 25%),radial-gradient(circle at 92% 16%,#e6d8ff 0 10%,transparent 25%),linear-gradient(145deg,#fffafd,#fff0f6 52%,#f6efff);border:1px solid #ffffff;box-shadow:0 25px 70px #7b304528}
+.memory-sheet:before{inset:10px;border:1px solid #ef9fbc;border-radius:24px;box-shadow:inset 0 0 0 5px #ffffff80}
+.memory-sheet .gift-title{padding-top:24px}.memory-sheet .gift-title .mini-sticker{font-size:38px}.memory-sheet .gift-title h2{font:700 clamp(38px,10vw,54px) Caveat;color:#df3972;text-shadow:0 5px 18px #df397218}.memory-sheet .gift-title .tiny-note{font-size:18px;color:#a65c76}
+.memory-sheet .gift-content{padding:8px 2px 22px}.memory-sheet .gallery{gap:16px;margin:8px auto 0;max-width:680px}
+.memory-thumb{position:relative;aspect-ratio:1/1.08;padding:8px;border-radius:24px;background:linear-gradient(145deg,#ffffff,#ffeaf3 70%,#f5eaff);border:1px solid #ffffff;box-shadow:0 15px 34px #7b304526;transition:transform .22s ease,box-shadow .22s ease;overflow:hidden}
+.memory-thumb:after{content:"♡";position:absolute;right:11px;top:8px;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#ffffffdd;color:#e33f78;font-size:18px;box-shadow:0 5px 12px #7b304515}
+.memory-thumb:active{transform:scale(.97)}.memory-thumb:hover{transform:translateY(-3px) rotate(-.4deg);box-shadow:0 20px 40px #7b304532}
+.memory-thumb:before{inset:5px;border:1px dashed #e99bb8;border-radius:19px}.memory-thumb img,.memory-thumb video{height:calc(100% - 32px);border-radius:16px;box-shadow:0 7px 18px #7b304520;background:#fff}.memory-thumb .memory-label{padding:7px 3px 0;font:600 17px Caveat;color:#a8446a}
+.memory-viewer{background:linear-gradient(135deg,#24131eaa,#33233eaa);backdrop-filter:blur(18px)}
+.memory-viewer-card{width:min(94vw,820px);padding:16px;border-radius:30px;background:linear-gradient(145deg,#fffafd,#ffeef5);border:1px solid #fff;box-shadow:0 30px 100px #160b124d}
+.memory-viewer-card:before{inset:7px;border:1px solid #efadc4;border-radius:24px;box-shadow:inset 0 0 0 4px #ffffff80}
+.memory-caption{font:700 24px Caveat;color:#d43a70;padding:3px 44px 10px}.memory-viewer-media{margin:0 4px;padding:18px;max-height:calc(100dvh - 175px);border:1px solid #f0bfd0;background:linear-gradient(145deg,#fff7fb,#ffe8f0);border-radius:24px;box-shadow:inset 0 0 0 5px #fff,0 12px 30px #7b304518}
+.memory-viewer-media:before{inset:9px;border:1px dashed #e7a1bb;border-radius:18px;box-shadow:none}.memory-viewer-media img,.memory-viewer-media video{max-width:100%;max-height:calc(100dvh - 225px);border:7px solid #fff;border-radius:16px;box-shadow:0 12px 30px #7b30452f;background:#fff}
+.memory-viewer-actions{padding:13px 0 3px}.memory-viewer-actions button{padding:12px 22px;font-size:15px;box-shadow:0 8px 18px #7b304518}.memory-love{background:#ffe1ed;color:#b52f5c!important}.memory-save{background:linear-gradient(90deg,#ff4f81,#e63e88);color:#fff!important}
+.memory-close{right:15px;top:13px;width:40px;height:40px;background:#24161d;color:#fff;font-size:22px;box-shadow:0 8px 20px #0002}
+@media(max-width:520px){.memory-sheet .gallery{gap:10px}.memory-thumb{border-radius:19px;padding:7px}.memory-thumb:before{border-radius:15px}.memory-thumb img,.memory-thumb video{border-radius:12px}.memory-thumb .memory-label{font-size:15px}.memory-sheet .gift-title h2{font-size:43px}.memory-viewer-card{padding:11px;border-radius:24px}.memory-viewer-media{margin:0 2px;padding:13px;max-height:calc(100dvh - 170px)}.memory-viewer-media img,.memory-viewer-media video{max-height:calc(100dvh - 235px);border-width:5px}.memory-caption{font-size:21px}.memory-viewer-actions button{padding:10px 17px;font-size:14px}}
+@media(prefers-color-scheme:dark){
+ body{color:#f7eaf0}.sub{color:#c7afb9}.gift-sheet{color:#f7eaf0}.memory-sheet{background:radial-gradient(circle at 8% 10%,#51263b 0 10%,transparent 25%),radial-gradient(circle at 92% 16%,#33284d 0 10%,transparent 25%),linear-gradient(145deg,#1d151b,#291a24 55%,#211a2e);border-color:#4a3540}.memory-sheet:before{border-color:#87516a;box-shadow:inset 0 0 0 5px #ffffff08}.memory-sheet .gift-title h2{color:#ff9fbe}.memory-sheet .gift-title .tiny-note{color:#d2aab9}.memory-thumb{background:linear-gradient(145deg,#261a21,#34202a 70%,#2a2239);border-color:#4b3540;box-shadow:0 15px 34px #0008}.memory-thumb:after{background:#24171de8;color:#ff9fbe}.memory-thumb:before{border-color:#85516a}.memory-thumb .memory-label{color:#f0a4bc}.memory-viewer{background:#0d090dcc}.memory-viewer-card{background:linear-gradient(145deg,#20171c,#2b1b25);border-color:#4b3540}.memory-viewer-card:before{border-color:#74495d;box-shadow:inset 0 0 0 4px #ffffff08}.memory-caption{color:#ff9fbe}.memory-viewer-media{background:linear-gradient(145deg,#24191f,#30202a);border-color:#654354;box-shadow:inset 0 0 0 5px #ffffff08,0 12px 30px #0008}.memory-viewer-media:before{border-color:#71475a}.memory-viewer-media img,.memory-viewer-media video{border-color:#fff}.memory-close{background:#fff;color:#7b2343}.memory-love{background:#3a202d;color:#ffb1c7!important}.memory-save{background:linear-gradient(90deg,#ff4f81,#d93679)}
+ .private-message-panel,.private-message{background:#21171d;border-color:#4a3540;color:#f7eaf0}.private-message-panel h3,.private-message h3{color:#ffd6e5}.private-message-panel p,.private-message p{color:#c5aeb7}.private-message-panel textarea,.private-message-panel input{background:#281b21;color:#f7eaf0;border-color:#513844}
+}
 </style>
 
 </head>
@@ -34,7 +56,7 @@
 </section>
 <div id="error" class="error"></div><div id="loadingState" style="text-align:center;padding:24px;color:#765964">Loading your surprise… 💗</div>
 <section class="menu" id="menu" style="display:grid"></section>
-<div id="panels"></div><div class="private-message-wrap"><button class="private-message-capsule" type="button" onclick="openPanel('privateMessage')"><span>💌</span> Send a Private Message</button></div><div class="memory-viewer" id="memoryViewer" role="dialog" aria-modal="true"><div class="memory-viewer-card"><button class="memory-close" type="button" onclick="closeMemoryViewer()">×</button><div class="memory-caption" id="memoryCaption">A little memory ♡</div><div class="memory-viewer-media" id="memoryViewerMedia"></div><div class="memory-viewer-actions"><button class="memory-love" id="memoryLove" type="button">💗 Love it</button><button class="memory-save" id="memorySave" type="button">Save</button></div></div></div>
+<div id="panels"></div><div class="private-message-wrap"><button class="private-message-capsule" type="button" onclick="openPanel('privateMessage')"><span>💌</span> Send a Private Message</button></div><div class="memory-viewer" id="memoryViewer" role="dialog" aria-modal="true"><div class="memory-viewer-card"><button class="memory-close" type="button" onclick="closeMemoryViewer()">×</button><div class="memory-caption" id="memoryCaption">A little memory ♡</div><div class="memory-viewer-media" id="memoryViewerMedia"></div><div class="memory-viewer-actions"><button class="memory-love" id="memoryLove" type="button">💗 Love it</button><button class="memory-save" id="memorySave" type="button">💾 Save</button></div></div></div>
 <div class="music" id="music"></div>
 </main>
 <script>
@@ -59,10 +81,10 @@ function addStickers(list){
  list.slice(0,6).forEach((x,i)=>{const e=document.createElement("span");e.className="float-sticker";e.textContent=x;e.style.left=spots[i][0]+"%";e.style.top=spots[i][1]+"%";e.style.setProperty("--dur",(4+Math.random()*2)+"s");e.style.setProperty("--x",(Math.random()*24-12)+"px");e.style.animationDelay=(-Math.random()*4)+"s";layer.appendChild(e);});
 }
 function transition(cb){const t=$("pageTransition");if(!t){cb();return}t.classList.add("active");setTimeout(()=>{cb();requestAnimationFrame(()=>t.classList.remove("active"));},250);}
-let activePanelName="";let memoryViewerOpen=false;;
+let activePanelName="";let memoryViewerOpen=false;let memoryHistoryActive=false;let skipPanelPop=false;
 function openPanel(name,push=true){const el=$(name);if(!el)return;activePanelName=name;transition(()=>{document.body.classList.add("detail-view");document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active","page-exit"));el.classList.add("active","page-enter");setTimeout(()=>el.classList.remove("page-enter"),600);window.scrollTo({top:0,behavior:"instant"});});if(push)history.pushState({wishingStarPanel:name},"",location.href.split("#")[0]+"#"+name);}
 function closePanels(fromPop=false){const wasOpen=!!activePanelName;activePanelName="";transition(()=>{document.body.classList.remove("detail-view");document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active","page-exit"));window.scrollTo({top:0,behavior:"instant"});});if(wasOpen&&!fromPop&&location.hash)history.back();}
-window.addEventListener("popstate",()=>{if(memoryViewerOpen){closeMemoryViewer(true);return;}if(activePanelName)closePanels(true);});
+window.addEventListener("popstate",()=>{if(memoryViewerOpen){closeMemoryViewer(true);return;}if(skipPanelPop){skipPanelPop=false;return;}if(activePanelName)closePanels(true);});
 window.addEventListener("hashchange",()=>{if(activePanelName&&!location.hash)closePanels(true);});
 function burst(){const icons=["💖","✨","💕","🎀","🌸","🐼","🧸","🐱","🦋"];for(let i=0;i<28;i++){const e=document.createElement("span");e.className="gift-burst";e.textContent=icons[i%icons.length];e.style.left="50%";e.style.top="48%";e.style.setProperty("--dx",(Math.random()*520-260)+"px");e.style.setProperty("--dy",(Math.random()*520-300)+"px");e.style.setProperty("--rot",(Math.random()*720-360)+"deg");document.body.appendChild(e);setTimeout(()=>e.remove(),1500);}}
 
@@ -130,7 +152,7 @@ function openMemory(memory,index){
  love.onclick=async()=>{love.textContent="💗 Loved!";await sendRecipientResponse("memory_love","loved","Love it");setTimeout(()=>love.textContent="💗 Love it",900);};
  save.onclick=()=>saveMemory(memory,index);
 }
-function closeMemoryViewer(fromHistory=false){const v=$("memoryViewer");const media=$("memoryMainMedia");if(media&&media.tagName==="VIDEO"){media.pause();media.currentTime=0;media.removeAttribute("src");media.load();}if(v)v.classList.remove("show");document.body.style.overflow="";memoryViewerOpen=false;if(!fromHistory&&location.hash==="#memory")history.back();}
+function closeMemoryViewer(fromHistory=false){const v=$("memoryViewer");const media=$("memoryMainMedia");if(media&&media.tagName==="VIDEO"){media.pause();media.currentTime=0;media.removeAttribute("src");media.load();}if(v)v.classList.remove("show");document.body.style.overflow="";memoryViewerOpen=false;if(fromHistory){memoryHistoryActive=false;return;}if(memoryHistoryActive){memoryHistoryActive=false;skipPanelPop=true;history.back();}}
 async function moveDateNo(){const b=$("dateNoBtn");if(b)b.style.transform="translate("+(Math.random()*140-70)+"px,"+(Math.random()*80-40)+"px)";await sendRecipientResponse("date_night","maybe","Maybe");}
 async function saveMemory(memory,index){
  const b=$("memorySave");if(!b)return;b.disabled=true;b.textContent="Preparing… 💗";
@@ -143,13 +165,13 @@ async function saveMemory(memory,index){
   }else{
    const a=document.createElement("a");a.href="/api/media-proxy?download=1&url="+encodeURIComponent(memory.src);a.download="WishingStar-Memory-"+(index+1)+".mp4";a.click();
   }
-  b.textContent="✓ Saved";setTimeout(()=>{b.textContent="Save";b.disabled=false},1200);
- }catch(e){console.error(e);b.disabled=false;b.textContent="Save";alert("Could not save this memory. Please use the browser's save/download option.");}
+  b.textContent="✓ Saved";setTimeout(()=>{b.textContent="💾 Save";b.disabled=false},1200);
+ }catch(e){console.error(e);b.disabled=false;b.textContent="💾 Save";alert("Could not save this memory. Please use the browser's save/download option.");}
 }
 function openMemory(memory,index){
  const v=$("memoryViewer"),box=$("memoryViewerMedia"),cap=$("memoryCaption"),save=$("memorySave"),love=$("memoryLove");
  if(!v||!memory)return;
- if(memoryViewerOpen)return;memoryViewerOpen=true;history.pushState({wishingstarMemory:true},"",location.pathname+location.search+"#memory");v.classList.add("show");document.body.style.overflow="hidden";
+ if(memoryViewerOpen)return;memoryViewerOpen=true;memoryHistoryActive=true;history.pushState({wishingstarMemory:true},"",location.pathname+location.search+"#memory");v.classList.add("show");document.body.style.overflow="hidden";
  cap.textContent=(memory.type==="image"?"📸 Memory ":"🎬 Memory ")+(index+1)+" ♡";
  box.innerHTML="";
  const media=document.createElement(memory.type==="image"?"img":"video");media.src=memory.src;
@@ -175,8 +197,8 @@ async function saveMemory(memory,index){
   }else{
    const a=document.createElement("a");a.href="/api/media-proxy?download=1&url="+encodeURIComponent(memory.src);a.download="WishingStar-Memory-"+(index+1)+".mp4";a.click();
   }
-  b.textContent="✓ Saved";setTimeout(()=>{b.textContent="Save";b.disabled=false},1200);
- }catch(e){console.error(e);b.disabled=false;b.textContent="Save";}
+  b.textContent="✓ Saved";setTimeout(()=>{b.textContent="💾 Save";b.disabled=false},1200);
+ }catch(e){console.error(e);b.disabled=false;b.textContent="💾 Save";}
 }
 async function moveNo(){const b=$("noBtn");if(b)b.style.transform="translate("+(Math.random()*140-70)+"px,"+(Math.random()*80-40)+"px)";await sendRecipientResponse("proposal","maybe","Maybe");}
 async function celebrate(){const p=$("proposal");if(p)p.innerHTML="<h2>Yay! 💖✨</h2><p>You've just made this moment unforgettable.</p>";await sendRecipientResponse("proposal","yes","Yes");}
