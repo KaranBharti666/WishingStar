@@ -7,6 +7,15 @@ const {readPages,createPage,updatePage,deletePage,hydratePage,uploadMedia,migrat
 const app=express();
 const PORT=process.env.PORT||3000;
 
+const deviceToken=q=>String(q.get("x-device-token")||"").trim().slice(0,160);
+const validDeviceToken=t=>/^[A-Za-z0-9_-]{24,160}$/.test(t);
+const publicPage=p=>{if(!p)return p;const x={...p};delete x.ownerToken;return x;};
+const requireOwner=(p,q,s)=>{
+  const t=deviceToken(q);
+  if(!p||!validDeviceToken(t)||p.ownerToken!==t){s.status(403).json({error:"This WishingStar belongs to another device."});return false;}
+  return true;
+};
+
 app.use(express.json({limit:"70mb"}));
 app.use(express.static(path.join(__dirname,"public"),{
   setHeaders:(res,filePath)=>{
@@ -62,8 +71,10 @@ const clean=b=>({
 
 app.get("/api/pages",async(q,s)=>{
   try{
+    const t=deviceToken(q);
+    if(!validDeviceToken(t))return s.status(403).json({error:"Your device identity is missing. Please refresh the dashboard."});
     const pages=await readPages();
-    s.json(Object.values(pages).sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||""))));
+    s.json(Object.values(pages).filter(p=>p.ownerToken===t).map(publicPage).sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||""))));
   }catch(e){
     console.error("list pages",e);
     s.status(500).json({error:"Unable to load your WishingStars right now."});
@@ -72,6 +83,7 @@ app.get("/api/pages",async(q,s)=>{
 
 app.post("/api/media",async(q,s)=>{
   try{
+    if(!validDeviceToken(deviceToken(q)))return s.status(403).json({error:"Your device identity is missing. Please refresh and try again."});
     if(!r2Configured)return s.status(503).json({error:"Cloudflare R2 storage is not configured yet."});
     const v=q.body?.data;
     const folder=["photos","videos","audio"].includes(q.body?.folder)?q.body.folder:"other";
@@ -83,10 +95,12 @@ app.post("/api/media",async(q,s)=>{
 
 app.post("/api/pages",async(q,s)=>{
   try{
+    const t=deviceToken(q);
+    if(!validDeviceToken(t))return s.status(403).json({error:"Your device identity is missing. Please refresh and try again."});
     const id=crypto.randomBytes(7).toString("base64url");
     const now=new Date().toISOString();
     const p=await hydratePage(clean(q.body));
-    await createPage({...p,id,createdAt:now,updatedAt:now});
+    await createPage({...p,id,ownerToken:t,createdAt:now,updatedAt:now});
     s.status(201).json({id,url:q.protocol+"://"+q.get("host")+"/s/"+id});
   }catch(e){
     console.error("create page",e);
@@ -116,7 +130,7 @@ app.get("/api/pages/:id",async(q,s)=>{
   try{
     const d=await readPages();
     const p=d[q.params.id];
-    p?s.json(p):s.status(404).json({error:"Not found"});
+    p?s.json(publicPage(p)):s.status(404).json({error:"Not found"});
   }catch(e){
     console.error("get page",e);
     s.status(500).json({error:"Storage unavailable"});
@@ -128,6 +142,7 @@ app.put("/api/pages/:id",async(q,s)=>{
     const d=await readPages();
     const old=d[q.params.id];
     if(!old)return s.status(404).json({error:"Not found"});
+    if(!requireOwner(old,q,s))return;
     const p=await hydratePage(clean(q.body));
     const updated={...p,id:q.params.id,createdAt:old.createdAt,updatedAt:new Date().toISOString()};
     const saved=await updatePage(q.params.id,updated,q.get("if-unmodified-since")||null);
@@ -141,6 +156,9 @@ app.put("/api/pages/:id",async(q,s)=>{
 
 app.delete("/api/pages/:id",async(q,s)=>{
   try{
+    const d=await readPages(),p=d[q.params.id];
+    if(!p)return s.status(404).json({error:"Not found"});
+    if(!requireOwner(p,q,s))return;
     const ok=await deletePage(q.params.id);
     ok?s.json({ok:true}):s.status(404).json({error:"Not found"});
   }catch(e){
@@ -177,6 +195,7 @@ app.get("/api/pages/:id/qr-card",async(q,s)=>{
 
 app.get("/api/r2/files",async(q,s)=>{
   try{
+    if(!validDeviceToken(deviceToken(q)))return s.status(403).json({error:"Your device identity is missing."});
     if(!r2Configured)return s.status(503).json({error:"R2 is not configured"});
     s.json({files:await listR2Files()});
   }catch(e){
