@@ -144,7 +144,7 @@ app.put("/api/pages/:id",async(q,s)=>{
     if(!old)return s.status(404).json({error:"Not found"});
     if(!requireOwner(old,q,s))return;
     const p=await hydratePage(clean(q.body));
-    const updated={...p,id:q.params.id,createdAt:old.createdAt,updatedAt:new Date().toISOString()};
+    const updated={...p,id:q.params.id,ownerToken:old.ownerToken,createdAt:old.createdAt,updatedAt:new Date().toISOString()};
     const saved=await updatePage(q.params.id,updated,q.get("if-unmodified-since")||null);
     if(saved)s.json(saved);
     else s.status(q.get("if-unmodified-since")?409:404).json({error:q.get("if-unmodified-since")?"This WishingStar was changed in another tab. Reload it before saving again.":"Not found"});
