@@ -232,6 +232,43 @@ html{font-size:16px;-webkit-text-size-adjust:100%;}
 
 <footer><div class="wrap"><div class="footerLogo">WishingStar ✦</div><p>Made for moments worth remembering. 💗</p></div></footer>
 <div class="sticky"><a class="btn primary" href="/create.html">Create your surprise — Free ✨</a></div>
-<style>.sticky{display:none}@media(max-width:520px){.sticky{display:block;position:fixed;left:10px;right:10px;bottom:10px;z-index:30}.sticky .btn{box-shadow:0 12px 28px #7b304530}}</style>
+<style>.sticky{display:none}@media(max-width:520px){.sticky{display:block;position:fixed;left:10px;right:10px;bottom:10px;z-index:30}.sticky .btn{box-shadow:0 12px 28px #7b304530}}
+/* WishingStar touch feedback: remove Android/Chrome's default tap square and use our own */
+html,body,*{
+  -webkit-tap-highlight-color:transparent;
+}
+button,a,[role="button"],input,textarea,select{
+  -webkit-tap-highlight-color:transparent;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible),
+select:focus:not(:focus-visible){
+  outline:none;
+}
+.wishing-click{
+  position:fixed;z-index:99999;width:20px;height:20px;margin:-10px 0 0 -10px;
+  border-radius:50%;pointer-events:none;border:2px solid rgba(255,79,129,.72);
+  background:rgba(255,159,190,.18);box-shadow:0 0 0 0 rgba(255,79,129,.25);
+  transform:scale(.35);animation:wishingClick .48s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes wishingClick{
+  0%{opacity:.95;transform:scale(.35)}
+  55%{opacity:.65}
+  100%{opacity:0;transform:scale(2.35);box-shadow:0 0 0 10px rgba(255,79,129,0)}
+}
+</style>
+
+/* Custom tap feedback replaces the browser's blue tap highlight. */
+document.addEventListener("click",function(e){
+  if(e.defaultPrevented)return;
+  const x=e.clientX,y=e.clientY;
+  if(!Number.isFinite(x)||!Number.isFinite(y))return;
+  const r=document.createElement("span");
+  r.className="wishing-click";r.style.left=x+"px";r.style.top=y+"px";
+  document.body.appendChild(r);setTimeout(()=>r.remove(),520);
+},{passive:true});
+
 </body>
 </html>
