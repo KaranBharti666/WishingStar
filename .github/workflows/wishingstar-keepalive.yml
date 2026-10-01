@@ -1,0 +1,14 @@
+name: WishingStar keep-alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake WishingStar
+        run: |
+          curl -fsS --max-time 30 -o /dev/null -w "WishingStar HTTP %{http_code}\n" https://wishingstar.onrender.com/
