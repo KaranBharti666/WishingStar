@@ -33,6 +33,19 @@ input:hover,textarea:hover,select:hover{border-color:#e8b8c9}input:focus,textare
 @keyframes floatHeart{50%{transform:translateY(-5px) scale(1.03)}}
 @media(max-width:760px){body{padding:9px}.top{top:6px;padding:8px 10px;border-radius:16px}.logo{font-size:34px}.dash{font-size:11px;padding:8px 10px}.hero{padding:29px 7px 23px}.hero h1{font-size:39px;line-height:1.04}.hero p{font-size:14px;line-height:1.55}.grid{grid-template-columns:1fr;gap:14px}.card{padding:18px;border-radius:23px}.card h2{font-size:23px}.preview{position:relative;top:auto;min-height:430px}.row{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.media-grid{grid-template-columns:repeat(3,1fr);gap:8px}.pvtitle{font-size:27px}.name{font-size:30px}.primary{font-size:15px;padding:15px}.filebtn{font-size:14px;padding:12px 15px}.box{padding:15px}.hint{font-size:12px}}
 @media(max-width:390px){.dash{font-size:10px}.logo{font-size:31px}.hero h1{font-size:34px}.hero p{font-size:13px}.media-grid{grid-template-columns:repeat(2,1fr)}.preview{min-height:390px}}
+
+@media(prefers-color-scheme:dark){
+ :root{--ink:#f7eaf0;--muted:#c3adb6;--line:#47343e;--soft:#21171d}
+ body{background:radial-gradient(circle at 8% 4%,#34202a 0 18%,transparent 38%),radial-gradient(circle at 94% 16%,#30233e 0 14%,transparent 35%),linear-gradient(145deg,#120d12,#1d1319 52%,#171328);color:var(--ink)}
+ .top{background:#1d151bee;border-color:#3c2b34;box-shadow:0 10px 30px #0005}.dash{background:#291a22;border-color:#503540;color:#f3b7ca}
+ .hero:before{background:#30202a}.hero h1{color:#fff0f5}.hero p{color:#c6afb8}
+ .card{background:#1c1519f5;border-color:#3d2d35;box-shadow:0 22px 60px #0007}.card h2{color:#ffeaf1}.card h2:after{background:#ff7fa4}
+ label{color:#d8c0c9}.opt,.hint{color:#b39aa5}
+ input,textarea,select{background:#241a20;color:#f8eaf0;border-color:#4a3540;color-scheme:dark}input::placeholder,textarea::placeholder{color:#927a85}
+ .box{background:linear-gradient(145deg,#24191f,#1b1519);border-color:#49343e}.check{background:#241a20;border-color:#4a3540;color:#efd8e1}.media-drop{background:#21171c;border-color:#6a4050}.filebtn{background:#321d27;border-color:#5c3a47;color:#ffabc2}.remove{background:#251a20;color:#ff9eb8}
+ .preview{background:linear-gradient(145deg,#21171d,#3b1e2d);border-color:#4b3540}.preview.lavender{background:linear-gradient(145deg,#211b29,#302446)}.preview.sunset{background:linear-gradient(145deg,#271d1b,#4a2929)}.preview.classic{background:linear-gradient(145deg,#24201c,#3b3027)}.msg{color:#d2bcc4}.tiles div{background:#ffffff10;border-color:#ffffff18;color:#f6dce5}.result{background:#301b26}.error{background:#3a1d26;color:#ffb0c3}
+}
+html{-webkit-text-size-adjust:100%;}
 </style></head>
 <body><main class="wrap">
 <header class="top"><a class="logo" href="/" aria-label="WishingStar home" title="Back to WishingStar home">WishingStar <span>✦</span></a><a class="dash" href="/dashboard.html">My Dashboard →</a></header>
