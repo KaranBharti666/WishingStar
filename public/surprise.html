@@ -97,6 +97,7 @@ select:focus:not(:focus-visible){
 .welcome.preload.ready{visibility:visible;opacity:1;pointer-events:auto}
 .gift-page{visibility:hidden}
 .gift-page.ready{visibility:visible}
+.occasion-date{width:fit-content;margin:0 auto 10px;padding:7px 14px;border-radius:999px;background:var(--surface-strong);border:1px solid var(--line);color:var(--accent);font:600 17px Caveat;box-shadow:0 8px 20px var(--shadow);}
 </style>
 
 </head>
@@ -107,6 +108,7 @@ select:focus:not(:focus-visible){
 <div class="logo">WishingStar ✦</div>
 <div class="heart">💗</div>
 <div class="eyebrow" id="eyebrow">A little surprise made just for you</div><div class="sender-byline" id="senderByline"></div>
+<div class="occasion-date" id="occasionDateDisplay" hidden></div>
 <p class="sub">Explore the little things I love about us.</p>
 </section>
 <div id="error" class="error"></div><div id="loadingState" style="text-align:center;padding:24px;color:#765964">Loading your surprise… 💗</div>
@@ -153,6 +155,14 @@ function render(p){
  $("welcome").querySelector(".welcome-stickers").textContent=[...theme,...occ.stickers].slice(0,8).join(" "); $("giftPage").classList.add("ready"); $("welcome").classList.add("ready"); const boot=$("bootScreen"); if(boot)boot.remove();
  $("eyebrow").textContent=(occ.headline||"").replace("{name}",name);
  document.querySelector(".sub").textContent=occ.sub; const sender=String(p.sender||"").trim(); $("senderByline").textContent=sender?"Made with love by "+sender+" 💗":""; $("senderByline").style.display=sender?"inline-block":"none";
+ const occasionDate=String(p.date||"").trim(), dateEl=$("occasionDateDisplay");
+ if(dateEl){
+   if(occasionDate){
+     const parsed=new Date(occasionDate+"T00:00:00");
+     dateEl.textContent=Number.isNaN(parsed.getTime())?occasionDate:"📅 "+parsed.toLocaleDateString(undefined,{day:"numeric",month:"long",year:"numeric"});
+     dateEl.hidden=false;
+   }else{dateEl.hidden=true;}
+ }
 
  const photos=Array.isArray(p.photos)?p.photos:[],videos=Array.isArray(p.videos)?p.videos:[],hasMemories=photos.length+videos.length>0;
  const tiles=[...(hasMemories?[["memories","🖼️","Our Memories"]]:[]),["letter","💌","My Letter"]];
