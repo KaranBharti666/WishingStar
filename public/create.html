@@ -46,6 +46,32 @@ input:hover,textarea:hover,select:hover{border-color:#e8b8c9}input:focus,textare
  .preview{background:linear-gradient(145deg,#21171d,#3b1e2d);border-color:#4b3540}.preview.lavender{background:linear-gradient(145deg,#211b29,#302446)}.preview.sunset{background:linear-gradient(145deg,#271d1b,#4a2929)}.preview.classic{background:linear-gradient(145deg,#24201c,#3b3027)}.msg{color:#d2bcc4}.tiles div{background:#ffffff10;border-color:#ffffff18;color:#f6dce5}.result{background:#301b26}.error{background:#3a1d26;color:#ffb0c3}
 }
 html{-webkit-text-size-adjust:100%;}
+
+/* WishingStar touch feedback: remove Android/Chrome's default tap square and use our own */
+html,body,*{
+  -webkit-tap-highlight-color:transparent;
+}
+button,a,[role="button"],input,textarea,select{
+  -webkit-tap-highlight-color:transparent;
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible),
+select:focus:not(:focus-visible){
+  outline:none;
+}
+.wishing-click{
+  position:fixed;z-index:99999;width:20px;height:20px;margin:-10px 0 0 -10px;
+  border-radius:50%;pointer-events:none;border:2px solid rgba(255,79,129,.72);
+  background:rgba(255,159,190,.18);box-shadow:0 0 0 0 rgba(255,79,129,.25);
+  transform:scale(.35);animation:wishingClick .48s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes wishingClick{
+  0%{opacity:.95;transform:scale(.35)}
+  55%{opacity:.65}
+  100%{opacity:0;transform:scale(2.35);box-shadow:0 0 0 10px rgba(255,79,129,0)}
+}
 </style></head>
 <body><main class="wrap">
 <header class="top"><a class="logo" href="/" aria-label="WishingStar home" title="Back to WishingStar home">WishingStar <span>✦</span></a><a class="dash" href="/dashboard.html">My Dashboard →</a></header>
@@ -134,4 +160,14 @@ async function uploadAssets(){
 async function save(){hideError();if(!validate())return;const b=$("saveBtn");b.disabled=true;b.textContent=editId?"Saving…":"Creating your WishingStar…";try{await uploadAssets();b.textContent=editId?"Saving your WishingStar…":"Creating your WishingStar…";const r=await fetch(editId?"/api/pages/"+editId:"/api/pages",{method:editId?"PUT":"POST",headers:Object.assign({"Content-Type":"application/json","X-Admin-Token":adminToken()},editId&&editUpdatedAt?{"If-Unmodified-Since":editUpdatedAt}:{}),body:JSON.stringify(payload())});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||"Could not save your surprise.");if(editId&&d.updatedAt)editUpdatedAt=d.updatedAt;showResult(d.id||editId)}catch(e){showError(e.message||"Something went wrong.");b.disabled=false;b.textContent=editId?"Save changes ✨":"Create WishingStar ✨"}}
 function showResult(id){$("result").style.display="block";$("result").innerHTML='<b>✨ Your WishingStar is ready!</b><p><a target="_blank" href="/s/'+id+'">Open your surprise →</a></p><img class="qr" src="/api/pages/'+id+'/qr"><p><a target="_blank" href="/api/pages/'+id+'/qr-card"><button type="button">💗 Open QR Card</button></a></p><button type="button" onclick="navigator.clipboard?.writeText(location.origin+\'/s/'+id+'\')">Copy link</button>'}
 renderSections();applyOccasionUI();pv();load();$("saveBtn").addEventListener("click",save);
+
+/* Custom tap feedback replaces the browser's blue tap highlight. */
+document.addEventListener("click",function(e){
+  if(e.defaultPrevented)return;
+  const x=e.clientX,y=e.clientY;
+  if(!Number.isFinite(x)||!Number.isFinite(y))return;
+  const r=document.createElement("span");
+  r.className="wishing-click";r.style.left=x+"px";r.style.top=y+"px";
+  document.body.appendChild(r);setTimeout(()=>r.remove(),520);
+},{passive:true});
 </script></body></html>
