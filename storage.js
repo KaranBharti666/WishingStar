@@ -46,7 +46,14 @@ async function driveWrite(data){
 function getDb(){
  if(!DATABASE_READY)return null;
  if(!dbPromise){
-   dbPromise=new Pool({connectionString:process.env.DATABASE_URL,ssl:{rejectUnauthorized:false},max:5});
+   dbPromise=new Pool({
+     connectionString:process.env.DATABASE_URL,
+     ssl:{rejectUnauthorized:false},
+     max:5,
+     connectionTimeoutMillis:15000,
+     statement_timeout:30000,
+     idle_in_transaction_session_timeout:30000
+   });
  }
  return dbPromise;
 }
