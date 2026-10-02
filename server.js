@@ -21,7 +21,7 @@ const requireOwner=(p,q,s)=>{
 app.use(express.json({limit:"70mb"}));
 app.use(express.static(path.join(__dirname,"public"),{
   setHeaders:(res,filePath)=>{
-    if(filePath.endsWith("index.html")||filePath.endsWith(".js")){
+    if(filePath.endsWith(".html")||filePath.endsWith(".js")){
       res.setHeader("Cache-Control","no-store, no-cache, must-revalidate, proxy-revalidate");
     }
   }
@@ -122,7 +122,7 @@ app.post("/api/pages",async(q,s)=>{
     const now=new Date().toISOString();
     const p=await hydratePage(clean(q.body));
     await createPage({...p,id,ownerToken:t,createdAt:now,updatedAt:now});
-    s.status(201).json({id,url:q.protocol+"://"+q.get("host")+"/s/"+id});
+    s.status(201).json({id,url:q.protocol+"://"+q.get("host")+"/s/"+id,updatedAt:now});
   }catch(e){
     console.error("create page",e);
     s.status(500).json({error:"Could not save your surprise. Please try again."});
