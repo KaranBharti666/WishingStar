@@ -47,22 +47,63 @@ select:focus:not(:focus-visible){
 }
 </style></head><body><main class="wrap"><div class="top"><a class="logo" href="/" aria-label="WishingStar home">WishingStar <span>✦</span></a><a class="create" href="/create.html">＋ Create Surprise</a></div><section class="hero"><span class="eyebrow">YOUR LITTLE SURPRISE SPACE ✦</span><h1>All your <span>WishingStars</span> in one place.</h1><p>Create, edit, share and keep track of every little surprise you make. 💗</p></section><section class="stats"><div class="stat"><div class="icon">✨</div><span>Total surprises</span><b id="total">0</b></div><div class="stat"><div class="icon">🎂</div><span>Birthday surprises</span><b id="birth">0</b></div><div class="stat"><div class="icon">💗</div><span>Other occasions</span><b id="other">0</b></div></section><div class="toolbar"><div class="search"><span>🔎</span><input id="q" placeholder="Search recipient, title or sender..."></div><select id="f"><option value="all">All occasions</option><option value="birthday">Birthday</option><option value="proposal">Proposal</option><option value="valentine">Valentine</option><option value="anniversary">Anniversary</option><option value="custom">Custom</option></select></div><section class="list" id="list"></section></main><script>
 let pages=[],loading=false;
+const DASH_STORE="wishingstar_dashboard_v2";
 const deviceToken=()=>{let t=localStorage.getItem("wishingstar_device_id");if(!t){const b=new Uint8Array(32);crypto.getRandomValues(b);t=Array.from(b,x=>x.toString(16).padStart(2,"0")).join("");localStorage.setItem("wishingstar_device_id",t);}return t;};
 const q=document.getElementById("q"),f=document.getElementById("f"),list=document.getElementById("list");
 const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+function readDashboard(){try{const x=JSON.parse(localStorage.getItem(DASH_STORE)||"[]");return Array.isArray(x)?x.filter(p=>p&&p.id):[]}catch{return[]}}
+function writeDashboard(x){try{localStorage.setItem(DASH_STORE,JSON.stringify(x))}catch{}}
+function cachePage(p){
+ if(!p||!p.id)return;
+ const all=readDashboard(),i=all.findIndex(x=>x.id===p.id),prev=i>=0?all[i]:{};
+ const row={...prev,...p,id:String(p.id),photos:Array.isArray(p.photos)?p.photos.slice(0,4):(prev.photos||[]),responses:Array.isArray(p.responses)?p.responses.slice(-200):(prev.responses||[])};
+ if(!row.createdAt)row.createdAt=new Date().toISOString();
+ row.updatedAt=p.updatedAt||prev.updatedAt||row.createdAt;
+ if(i>=0)all[i]=row;else all.push(row);
+ all.sort((a,b)=>String(b.createdAt||"").localeCompare(String(a.createdAt||"")));
+ writeDashboard(all);pages=all;
+}
+function removeCachedPage(id){const all=readDashboard().filter(p=>p.id!==id);writeDashboard(all);pages=all}
+function updateStats(){total.textContent=pages.length;birth.textContent=pages.filter(p=>p.type==="birthday").length;other.textContent=pages.filter(p=>p.type!=="birthday").length}
+async function syncResponses(){
+ const current=readDashboard();
+ if(!current.length)return;
+ const results=await Promise.all(current.map(async p=>{
+   try{
+     const r=await fetch("/api/pages/"+encodeURIComponent(p.id),{cache:"no-store"});
+     if(!r.ok)return p;
+     const remote=await r.json();
+     return {...p,responses:Array.isArray(remote.responses)?remote.responses.slice(-200):[]};
+   }catch{return p}
+ }));
+ writeDashboard(results);pages=results;updateStats();render();
+}
 async function load(){
- if(loading)return; loading=true; list.innerHTML='<div class="empty">Loading your WishingStars…</div>';
+ if(loading)return;
+ loading=true;
+ const cached=readDashboard();
+ if(cached.length){
+   pages=cached;updateStats();render();loading=false;
+   syncResponses();
+   return;
+ }
+ list.innerHTML='<div class="empty">Loading your WishingStars…</div>';
  try{
-   const r=await fetch("/api/pages",{cache:"no-store",headers:{"X-Device-Token":deviceToken()}}),j=await r.json();
+   const r=await fetch("/api/pages",{cache:"no-store",headers:{"X-Device-Token":deviceToken()}});
+   const j=await r.json();
    if(!r.ok)throw Error(j.error||"Unable to load your WishingStars.");
-   pages=Array.isArray(j)?j:[];total.textContent=pages.length;birth.textContent=pages.filter(p=>p.type==="birthday").length;other.textContent=pages.filter(p=>p.type!=="birthday").length;render();
- }catch(e){list.innerHTML='<div class="empty">⚠️ '+esc(e.message||"Could not load your WishingStars.")+'<br><br><button class="primary" id="retry">Retry</button></div>';document.getElementById("retry").onclick=load}
- finally{loading=false}
+   pages=Array.isArray(j)?j:[];
+   writeDashboard(pages);
+   updateStats();render();
+ }catch(e){
+   list.innerHTML='<div class="empty">⚠️ '+esc(e.message||"Could not load your WishingStars.")+'<br><br><button class="primary" id="retry">Retry</button></div>';
+   document.getElementById("retry").onclick=load;
+ }finally{loading=false}
 }
 function render(){
  const needle=q.value.trim().toLowerCase(),x=pages.filter(p=>(f.value==="all"||p.type===f.value)&&((p.title||"")+" "+(p.recipient||"")+" "+(p.sender||"")).toLowerCase().includes(needle));
  list.innerHTML=x.length?x.map(p=>{
-   const thumbs=Array.isArray(p.photos)?p.photos.slice(0,4).map(u=>'<img src="'+esc(u)+'" alt="Memory" loading="lazy" onerror="this.style.display=\'none\'">').join(""):"";
+   const thumbs=Array.isArray(p.photos)?p.photos.slice(0,4).map(u=>'<img src="'+esc(u)+'" alt="Memory" loading="lazy" onerror="this.style.display=\\'none\\'">').join(""):"";
    return '<article class="item"><h3>'+esc(p.title||"Untitled")+'</h3><p>For <b>'+esc(p.recipient||"someone special")+'</b></p><span class="tag">'+esc(p.type)+'</span>'+(thumbs?'<div class="thumbs">'+thumbs+'</div>':'')+(Array.isArray(p.responses)&&p.responses.length?'<div class="responses"><div class="response-title">💌 Recipient responses</div>'+p.responses.slice().reverse().slice(0,5).map(r=>'<div class="response">'+esc(r.label||r.type)+': <b>'+esc(r.value)+'</b>'+(r.name?' · '+esc(r.name):' · Anonymous')+'<time>'+esc(new Date(r.createdAt).toLocaleString())+'</time></div>').join('')+'</div>':'')+'<div class="actions"><button class="primary" data-action="open" data-id="'+esc(p.id)+'">Open</button><button data-action="edit" data-id="'+esc(p.id)+'">Edit</button><button data-action="qr" data-id="'+esc(p.id)+'">QR</button><button class="danger" data-action="delete" data-id="'+esc(p.id)+'">Delete</button></div></article>'
  }).join(""):'<div class="empty">✨ No surprises yet.<br><br><a href="/create.html">Create your first WishingStar</a></div>';
 }
@@ -75,11 +116,15 @@ list.addEventListener("click",async e=>{
  else if(action==="delete"){
    if(!confirm("Delete this surprise permanently?"))return;
    b.disabled=true;b.textContent="Deleting…";
-   try{const r=await fetch("/api/pages/"+encodeURIComponent(id),{method:"DELETE",headers:{"X-Device-Token":deviceToken()}});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.error||"Delete failed.");pages=pages.filter(p=>p.id!==id);total.textContent=pages.length;birth.textContent=pages.filter(p=>p.type==="birthday").length;other.textContent=pages.filter(p=>p.type!=="birthday").length;render()}catch(err){alert(err.message||"Could not delete this surprise.");b.disabled=false;b.textContent="Delete"}
+   try{
+     const r=await fetch("/api/pages/"+encodeURIComponent(id),{method:"DELETE",headers:{"X-Device-Token":deviceToken()}});
+     const j=await r.json().catch(()=>({}));
+     if(!r.ok)throw Error(j.error||"Delete failed.");
+     removeCachedPage(id);updateStats();render();
+   }catch(err){alert(err.message||"Could not delete this surprise.");b.disabled=false;b.textContent="Delete"}
  }
 });
 q.oninput=render;f.onchange=render;load();
-
 /* Custom tap feedback replaces the browser's blue tap highlight. */
 document.addEventListener("click",function(e){
   if(e.defaultPrevented)return;
