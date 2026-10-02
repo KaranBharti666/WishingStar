@@ -206,13 +206,18 @@ async function deleteR2File(key){
  if(typeof key!=="string"||!key||key.includes("..")||key.startsWith("/"))throw new Error("Invalid R2 key");
  await r2Client().send(new DeleteObjectCommand({Bucket:process.env.R2_BUCKET,Key:key}));
 }
+async function uploadMediaBuffer(buffer,mime,folder,id){
+ if(!R2_READY)throw new Error("Cloudflare R2 is not configured");
+ if(!Buffer.isBuffer(buffer)||!buffer.length)throw new Error("Empty media file");
+ const ext=(String(mime||"application/octet-stream").split("/")[1]||"bin").replace(/[^a-z0-9]+/gi,"").slice(0,10)||"bin";
+ const key=folder+"/"+id+"-"+crypto.randomBytes(8).toString("hex")+"."+ext;
+ await r2Client().send(new PutObjectCommand({Bucket:process.env.R2_BUCKET,Key:key,Body:buffer,ContentType:mime||"application/octet-stream",CacheControl:"public,max-age=31536000,immutable"}));
+ return process.env.R2_PUBLIC_BASE_URL.replace(/\/$/,"")+"/"+key;
+}
 async function uploadDataUrl(v,folder,id){
  if(typeof v!=="string"||!v.startsWith("data:"))return v;
  const p=dataUrlParts(v);if(!p)return v;
- const ext=(p.mime.split("/")[1]||"bin").replace(/[^a-z0-9]+/gi,"").slice(0,10)||"bin";
- const key=folder+"/"+id+"-"+crypto.randomBytes(8).toString("hex")+"."+ext;
- await r2Client().send(new PutObjectCommand({Bucket:process.env.R2_BUCKET,Key:key,Body:p.data,ContentType:p.mime,CacheControl:"public,max-age=31536000,immutable"}));
- return process.env.R2_PUBLIC_BASE_URL.replace(/\/$/,"")+"/"+key;
+ return uploadMediaBuffer(p.data,p.mime,folder,id);
 }
 async function hydratePage(p){
  const id=p.id||crypto.randomBytes(7).toString("base64url"),out={...p,id};
@@ -249,4 +254,4 @@ async function migrateLocalIfNeeded(){
  await driveWrite(migrated);
  console.log("WishingStar storage migration: local pages copied to Google Drive + media to Cloudflare R2");
 }
-module.exports={readPages,writePages,createPage,updatePage,deletePage,hydratePage,uploadMedia:uploadDataUrl,migrateLocalIfNeeded,listR2Files,deleteR2File,backupR2ToGoogleDrive,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
+module.exports={readPages,writePages,createPage,updatePage,deletePage,hydratePage,uploadMedia:uploadDataUrl,uploadMediaBuffer,migrateLocalIfNeeded,listR2Files,deleteR2File,backupR2ToGoogleDrive,configured:DATABASE_READY||GOOGLE_READY,googleConfigured:GOOGLE_READY,r2Configured:R2_READY};
