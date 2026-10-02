@@ -149,7 +149,10 @@ async function load(){
    $("dateNightEnabled").checked=!!p.dateInvite;
    if(p.dateInvite){$("inviteDate").value=p.dateInvite.date||"";$("inviteTime").value=p.dateInvite.time||"";$("invitePlace").value=p.dateInvite.place||"";$("inviteMessage").value=p.dateInvite.message||""}
    if(customAudioData){$("audioPreview").src=customAudioData;$("audioPreview").style.display="block";$("audioName").textContent="Existing custom audio";$("removeAudio").style.display="inline-block"}
-   renderSections();applyOccasionUI();$("formTitle").textContent="Edit yourasync function uploadAssets(){
+   renderSections();applyOccasionUI();$("formTitle").textContent="Edit your surprise";$("saveBtn").textContent="Save changes ✨";pv();
+ }catch(e){showError("Could not load this WishingStar. Please refresh and try again.")}
+}
+async function uploadAssets(){
   const upload=async(data,folder,label)=>{
     if(typeof data!=="string"||!data.startsWith("data:"))return data;
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),120000);
@@ -167,9 +170,7 @@ async function load(){
   const uploadFile=async(file,folder,label)=>{
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),120000);
     try{
-      const form=new FormData();
-      form.append("folder",folder);
-      form.append("file",file,file.name||label);
+      const form=new FormData();form.append("folder",folder);form.append("file",file,file.name||label);
       const r=await fetch("/api/media",{method:"POST",headers:{"X-Device-Token":deviceToken()},body:form,signal:controller.signal});
       const d=await r.json().catch(()=>({}));
       if(!r.ok)throw Error(d.error||"Could not upload "+label+".");
