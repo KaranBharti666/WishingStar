@@ -2,10 +2,12 @@ const express=require("express");
 const QRCode=require("qrcode");
 const path=require("path");
 const crypto=require("crypto");
-const {readPages,createPage,updatePage,deletePage,hydratePage,uploadMedia,migrateLocalIfNeeded,listR2Files,configured,googleConfigured,r2Configured}=require("./storage");
+const multer=require("multer");
+const {readPages,createPage,updatePage,deletePage,hydratePage,uploadMedia,uploadMediaBuffer,migrateLocalIfNeeded,listR2Files,configured,googleConfigured,r2Configured}=require("./storage");
 
 const app=express();
 const PORT=process.env.PORT||3000;
+const mediaUpload=multer({storage:multer.memoryStorage(),limits:{fileSize:15*1024*1024}}).single("file");
 
 const deviceToken=q=>String(q.get("x-device-token")||"").trim().slice(0,160);
 const validDeviceToken=t=>/^[A-Za-z0-9_-]{24,160}$/.test(t);
@@ -81,16 +83,35 @@ app.get("/api/pages",async(q,s)=>{
   }
 });
 
-app.post("/api/media",async(q,s)=>{
-  try{
-    if(!validDeviceToken(deviceToken(q)))return s.status(403).json({error:"Your device identity is missing. Please refresh and try again."});
-    if(!r2Configured)return s.status(503).json({error:"Cloudflare R2 storage is not configured yet."});
-    const v=q.body?.data;
-    const folder=["photos","videos","audio"].includes(q.body?.folder)?q.body.folder:"other";
-    if(typeof v!=="string"||!v.startsWith("data:"))return s.status(400).json({error:"Invalid media file."});
-    const url=await uploadMedia(v,folder,crypto.randomBytes(7).toString("base64url"));
-    s.status(201).json({url});
-  }catch(e){console.error("media upload",e);s.status(500).json({error:"Could not upload media. Please try again."});}
+app.post("/api/media",(q,s)=>{
+  mediaUpload(q,s,async err=>{
+    if(err){
+      if(err.code==="LIMIT_FILE_SIZE")return s.status(413).json({error:"Media file is too large. Videos max 15 MB; audio max 5 MB."});
+      return s.status(400).json({error:"Could not read the media file."});
+    }
+    try{
+      if(!validDeviceToken(deviceToken(q)))return s.status(403).json({error:"Your device identity is missing. Please refresh and try again."});
+      if(!r2Configured)return s.status(503).json({error:"Cloudflare R2 storage is not configured yet."});
+      const folder=["photos","videos","audio"].includes(q.body?.folder)?q.body.folder:"other";
+      const limits={photos:5*1024*1024,videos:15*1024*1024,audio:5*1024*1024};
+      if(q.file){
+        const mime=String(q.file.mimetype||"").toLowerCase();
+        if(folder==="photos"&&!mime.startsWith("image/"))return s.status(400).json({error:"Please choose an image file."});
+        if(folder==="videos"&&!mime.startsWith("video/"))return s.status(400).json({error:"Please choose a video file."});
+        if(folder==="audio"&&!mime.startsWith("audio/"))return s.status(400).json({error:"Please choose an audio file."});
+        if(q.file.size>limits[folder])return s.status(413).json({error:folder==="audio"?"Custom audio must be 5 MB or smaller.":folder==="photos"?"Photos must be 5 MB or smaller.":"Videos must be 15 MB or smaller."});
+        const url=await uploadMediaBuffer(q.file.buffer,mime,folder,crypto.randomBytes(7).toString("base64url"));
+        return s.status(201).json({url});
+      }
+      const v=q.body?.data;
+      if(typeof v!=="string"||!v.startsWith("data:"))return s.status(400).json({error:"Invalid media file."});
+      const url=await uploadMedia(v,folder,crypto.randomBytes(7).toString("base64url"));
+      s.status(201).json({url});
+    }catch(e){
+      console.error("media upload",e);
+      s.status(500).json({error:"Could not upload media. Please try again."});
+    }
+  });
 });
 
 app.post("/api/pages",async(q,s)=>{
@@ -144,7 +165,7 @@ app.put("/api/pages/:id",async(q,s)=>{
     if(!old)return s.status(404).json({error:"Not found"});
     if(!requireOwner(old,q,s))return;
     const p=await hydratePage(clean(q.body));
-    const updated={...p,id:q.params.id,ownerToken:old.ownerToken,createdAt:old.createdAt,updatedAt:new Date().toISOString()};
+    const updated={...p,responses:Array.isArray(old.responses)?old.responses.slice(-200):[],id:q.params.id,ownerToken:old.ownerToken,createdAt:old.createdAt,updatedAt:new Date().toISOString()};
     const saved=await updatePage(q.params.id,updated,q.get("if-unmodified-since")||null);
     if(saved)s.json(saved);
     else s.status(q.get("if-unmodified-since")?409:404).json({error:q.get("if-unmodified-since")?"This WishingStar was changed in another tab. Reload it before saving again.":"Not found"});
