@@ -112,7 +112,7 @@ list.addEventListener("click",async e=>{
  if(!id)return;
  if(action==="open")window.open("/s/"+encodeURIComponent(id),"_blank");
  else if(action==="edit")location.href="/create.html?edit="+encodeURIComponent(id);
- else if(action==="qr")window.open("/api/pages/"+encodeURIComponent(id)+"/qr","_blank");
+ else if(action==="qr")window.open("/api/pages/"+encodeURIComponent(id)+"/qr-card","_blank");
  else if(action==="delete"){
    if(!confirm("Delete this surprise permanently?"))return;
    b.disabled=true;b.textContent="Deleting…";
